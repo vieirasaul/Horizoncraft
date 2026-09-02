@@ -1,0 +1,2 @@
+-- The confirmed launch content is installed idempotently by the migrations.
+-- This file intentionally adds no fictional sample records.
