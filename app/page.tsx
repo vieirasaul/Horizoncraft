@@ -1,18 +1,17 @@
 import Link from "next/link";
 import {
+  Anvil,
   ArrowRight,
   BookOpen,
   Flame,
+  Ghost,
   Layers3,
+  Skull,
   Sparkles,
   Zap,
 } from "lucide-react";
 import { CharacterCard } from "@/components/character-card";
-import {
-  ComicBurst,
-  HalftonePattern,
-  Sticker,
-} from "@/components/comic-decorations";
+import { HalftonePattern, Sticker } from "@/components/comic-decorations";
 import { CoverArt } from "@/components/cover-art";
 import { EmptyState } from "@/components/empty-state";
 import { PowerBadge } from "@/components/power-badge";
@@ -86,7 +85,7 @@ export default async function HomePage() {
           <div
             className="hero-comic-art"
             role="img"
-            aria-label="Composição abstrata provisória com portal, fogo, raios, materiais e energia fantasmagórica"
+            aria-label="Emblema HC cercado por um portal e símbolos da Caveira Vermelha, Kauan Raio, Metanic e Blood Phantom"
           >
             <span className="comic-cloud comic-cloud-one" />
             <span className="comic-cloud comic-cloud-two" />
@@ -95,16 +94,32 @@ export default async function HomePage() {
             <span className="world-block block-green" />
             <span className="world-block block-purple" />
             <span className="comic-portal" />
-            <span className="comic-hero hero-one" />
-            <span className="comic-hero hero-two" />
             <span className="comic-lightning" />
-            <span className="comic-burst">EM BREVE</span>
+            <span className="comic-monogram">HC</span>
+            <span className="hero-symbol hero-symbol-skull">
+              <Skull aria-hidden="true" strokeWidth={2.6} />
+            </span>
+            <span className="hero-symbol hero-symbol-lightning">
+              <Zap aria-hidden="true" fill="currentColor" strokeWidth={2.6} />
+            </span>
+            <span className="hero-symbol hero-symbol-metal">
+              <Anvil aria-hidden="true" strokeWidth={2.6} />
+            </span>
+            <span className="hero-symbol hero-symbol-ghost">
+              <Ghost aria-hidden="true" strokeWidth={2.6} />
+            </span>
           </div>
         </section>
 
         <section className="universe-intro" id="historia">
-          <ComicBurst>UAU!</ComicBurst>
-          <div>
+          <div className="intro-hero-silhouette" aria-hidden="true">
+            <span className="intro-hero-cape" />
+            <span className="intro-hero-head" />
+            <span className="intro-hero-torso" />
+            <span className="intro-hero-arm intro-hero-arm-left" />
+            <span className="intro-hero-arm intro-hero-arm-right" />
+          </div>
+          <div className="universe-intro-heading">
             <p className="section-kicker">A história</p>
             <h2>Uma história está começando</h2>
           </div>
