@@ -394,8 +394,10 @@ h3 {
   color: var(--ink);
 }
 .hero h1 {
+  width: max-content;
+  max-width: 100%;
   margin-bottom: 24px;
-  font-size: clamp(3.7rem, 6.5vw, 6.2rem);
+  font-size: clamp(3.4rem, 5.4vw, 5.3rem);
   color: var(--blue);
   text-transform: uppercase;
   text-shadow:
@@ -404,9 +406,10 @@ h3 {
 }
 .hero h1 span {
   display: block;
-  color: var(--ink);
-  font-size: 0.68em;
-  text-shadow: 4px 4px 0 var(--yellow);
+  color: inherit;
+  font-size: inherit;
+  white-space: nowrap;
+  text-shadow: inherit;
 }
 .hero-lead {
   max-width: 535px;
@@ -2839,7 +2842,7 @@ h3 {
     grid-template-columns: 1fr 430px;
   }
   .hero h1 {
-    font-size: clamp(3.8rem, 7vw, 5.8rem);
+    font-size: clamp(3.2rem, 5.2vw, 4.65rem);
   }
   .collectible-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2983,13 +2986,10 @@ h3 {
     padding: 45px 18px 0;
   }
   .hero h1 {
-    font-size: clamp(3rem, 17vw, 4.3rem);
+    font-size: clamp(2.7rem, 13.5vw, 3.45rem);
     text-shadow:
       2px 2px 0 var(--white),
       5px 5px 0 var(--ink);
-  }
-  .hero h1 span {
-    font-size: 0.63em;
   }
   .hero-actions {
     display: grid;
@@ -3179,6 +3179,71 @@ h3 {
   .admin-list > article > *:nth-child(2),
   .admin-list > div > *:nth-child(2) {
     grid-column: 1;
+  }
+}
+@media (max-width: 430px) {
+  .hero {
+    padding: 36px 18px 22px;
+    background: linear-gradient(#fff8dc 0 56%, #77adff 56% 100%);
+  }
+  .hero-copy {
+    width: 100%;
+  }
+  .hero-copy .sticker-label {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    line-height: 1.25;
+    text-align: center;
+    transform: none;
+  }
+  .hero-copy .sticker-label svg {
+    flex: none;
+  }
+  .hero h1 {
+    width: 100%;
+    margin-block: 20px;
+    font-size: clamp(2.45rem, 12vw, 3rem);
+    line-height: 0.96;
+  }
+  .hero-lead {
+    margin-bottom: 24px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .hero-actions {
+    width: 100%;
+    gap: 12px;
+  }
+  .hero-actions .button {
+    width: 100%;
+    min-height: 50px;
+    padding-inline: 12px;
+  }
+  .hero-comic-art {
+    width: calc(100% + 36px);
+    min-height: 350px;
+    margin: 24px -18px -22px;
+    overflow: hidden;
+    transform: none;
+  }
+  .comic-portal {
+    top: 68px;
+    left: calc(50% - 82px);
+    width: 164px;
+    height: 235px;
+    border-width: 14px;
+  }
+  .comic-lightning {
+    top: 30px;
+    width: 62px;
+    height: 120px;
+  }
+  .comic-burst {
+    top: 36%;
+    right: 1%;
+    width: 88px;
+    font-size: 0.95rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {

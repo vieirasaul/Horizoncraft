@@ -66,7 +66,10 @@ export default async function HomePage() {
             <p className="eyebrow sticker-label">
               <Sparkles size={16} /> Uma história de heróis, poderes e aventuras
             </p>
-            <h1>Bem-vindo ao Horizoncraft</h1>
+            <h1>
+              <span>Bem-vindo ao</span>
+              <span>Horizoncraft</span>
+            </h1>
             <p className="hero-lead">
               Conheça os personagens, descubra seus poderes e acompanhe uma
               história que está apenas começando.
