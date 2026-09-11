@@ -1,8 +1,9 @@
+import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
 import type { Character, GalleryItem, Story } from "@/lib/types";
 
 export const demoStories: Story[] = [
   {
-    id: "story-birthday",
+    id: SPECIAL_MESSAGE_STORY_ID,
     slug: "parabens-theo",
     title: "Parabéns, Théo!",
     synopsis: "O Horizoncraft agora tem um lugar só dele.",
@@ -52,7 +53,7 @@ export const demoStories: Story[] = [
 
 export const demoCharacters: Character[] = [
   {
-    id: "character-red-skull",
+    id: "31000000-0000-0000-0000-000000000001",
     slug: "caveira-vermelha",
     name: "Caveira Vermelha",
     role: "hero",
@@ -92,7 +93,7 @@ export const demoCharacters: Character[] = [
     ],
   },
   {
-    id: "character-lightning",
+    id: "31000000-0000-0000-0000-000000000002",
     slug: "kauan-raio",
     name: "Kauan Raio",
     role: "hero",
@@ -133,7 +134,7 @@ export const demoCharacters: Character[] = [
     ],
   },
   {
-    id: "character-metanic",
+    id: "31000000-0000-0000-0000-000000000003",
     slug: "metanic",
     name: "Metanic",
     role: "hero",
@@ -173,7 +174,7 @@ export const demoCharacters: Character[] = [
     ],
   },
   {
-    id: "character-phantom",
+    id: "31000000-0000-0000-0000-000000000004",
     slug: "blood-phantom",
     name: "Blood Phantom",
     role: "hero",

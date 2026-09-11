@@ -22,6 +22,7 @@ export function CharacterCard({ character }: { character: Character }) {
         </span>
       </div>
       <CharacterArtwork
+        id={character.id}
         name={character.name}
         slug={character.slug}
         accent={character.accent}

@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
 import { CoverArt } from "@/components/cover-art";
 import { EmptyState } from "@/components/empty-state";
 import { PublicShell } from "@/components/public-shell";
+import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
 import { getStories } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -15,10 +16,10 @@ export const metadata: Metadata = {
 export default async function StoryPage() {
   const stories = await getStories();
   const specialMessage = stories.find(
-    (story) => story.slug === "parabens-theo",
+    (story) => story.id === SPECIAL_MESSAGE_STORY_ID,
   );
   const regularStories = stories.filter(
-    (story) => story.slug !== "parabens-theo",
+    (story) => story.id !== SPECIAL_MESSAGE_STORY_ID,
   );
   const mainStory =
     regularStories.find((story) => story.featured) ?? regularStories[0];
@@ -84,15 +85,15 @@ export default async function StoryPage() {
                 title={specialMessage.title}
                 accent={specialMessage.accent}
                 imageUrl={specialMessage.coverUrl}
-                label="Uma mensagem especial"
-                subtitle="O Horizoncraft agora tem um lugar só dele."
+                label={specialMessage.category}
+                subtitle={specialMessage.synopsis}
               />
               <div>
                 <p className="section-kicker">
-                  <Sparkles size={15} /> Uma mensagem especial
+                  <Sparkles size={15} /> {specialMessage.category}
                 </p>
                 <h2>{specialMessage.title}</h2>
-                <p>O Horizoncraft agora tem um lugar só dele.</p>
+                <p>{specialMessage.synopsis}</p>
                 <Link
                   className="button button-yellow"
                   href={`/historias/${specialMessage.slug}/${specialMessage.chapters[0].slug}`}

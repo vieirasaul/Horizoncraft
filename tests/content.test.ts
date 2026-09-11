@@ -1,4 +1,8 @@
 import { describe, expect, it } from "vitest";
+import {
+  getCharacterVisualKey,
+  SPECIAL_MESSAGE_STORY_ID,
+} from "@/lib/content-identity";
 import { demoCharacters, demoGallery, demoStories } from "@/lib/demo-data";
 
 describe("demo content", () => {
@@ -58,5 +62,18 @@ describe("demo content", () => {
           character.curiosities.length === 0,
       ),
     ).toBe(true);
+  });
+
+  it("keeps special content and character visuals independent from slugs", () => {
+    expect(demoStories[0].id).toBe(SPECIAL_MESSAGE_STORY_ID);
+    expect(
+      getCharacterVisualKey(
+        "31000000-0000-0000-0000-000000000001",
+        "slug-alterado",
+      ),
+    ).toBe("caveira-vermelha");
+    expect(getCharacterVisualKey("novo-personagem", "slug-original")).toBe(
+      "slug-original",
+    );
   });
 });

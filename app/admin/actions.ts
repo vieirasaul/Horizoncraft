@@ -73,6 +73,26 @@ const chapterSchema = z.object({
 function values(formData: FormData) {
   return Object.fromEntries(formData.entries());
 }
+
+function revalidateStoryPages() {
+  revalidatePath("/");
+  revalidatePath("/historias");
+  revalidatePath("/historias/[slug]", "page");
+  revalidatePath("/historias/[slug]/[chapterSlug]", "page");
+}
+
+function revalidateCharacterPages() {
+  revalidatePath("/");
+  revalidatePath("/personagens");
+  revalidatePath("/personagens/[slug]", "page");
+  revalidatePath("/poderes");
+}
+
+function revalidateGalleryPages() {
+  revalidatePath("/");
+  revalidatePath("/galeria");
+}
+
 async function requireAdmin() {
   const auth = await getAuthenticatedAdmin();
   if (!auth.client || !auth.user) redirect("/admin/login");
@@ -126,8 +146,7 @@ export async function saveStory(formData: FormData) {
     redirect(
       `/admin/historias?erro=${encodeURIComponent(result.error.message)}`,
     );
-  revalidatePath("/");
-  revalidatePath("/historias");
+  revalidateStoryPages();
   redirect("/admin/historias?sucesso=historia-salva");
 }
 export async function deleteStory(formData: FormData) {
@@ -136,7 +155,7 @@ export async function deleteStory(formData: FormData) {
   const { error } = await client.from("stories").delete().eq("id", id);
   if (error)
     redirect(`/admin/historias?erro=${encodeURIComponent(error.message)}`);
-  revalidatePath("/historias");
+  revalidateStoryPages();
   redirect("/admin/historias?sucesso=historia-excluida");
 }
 
@@ -160,7 +179,7 @@ export async function saveChapter(formData: FormData) {
     redirect(
       `/admin/historias/${chapter.story_id}?erro=${encodeURIComponent(result.error.message)}`,
     );
-  revalidatePath("/historias");
+  revalidateStoryPages();
   redirect(`/admin/historias/${chapter.story_id}?sucesso=capitulo-salvo`);
 }
 export async function deleteChapter(formData: FormData) {
@@ -172,7 +191,7 @@ export async function deleteChapter(formData: FormData) {
     redirect(
       `/admin/historias/${storyId}?erro=${encodeURIComponent(error.message)}`,
     );
-  revalidatePath("/historias");
+  revalidateStoryPages();
   redirect(`/admin/historias/${storyId}?sucesso=capitulo-excluido`);
 }
 export async function moveChapter(formData: FormData) {
@@ -184,11 +203,17 @@ export async function moveChapter(formData: FormData) {
     .int()
     .min(1)
     .parse(formData.get("chapter_number"));
-  await client.rpc("move_chapter", {
+  const { error } = await client.rpc("move_chapter", {
     target_chapter_id: id,
     new_chapter_number: chapterNumber,
   });
+  if (error)
+    redirect(
+      `/admin/historias/${storyId}?erro=${encodeURIComponent(error.message)}`,
+    );
+  revalidateStoryPages();
   revalidatePath(`/admin/historias/${storyId}`);
+  redirect(`/admin/historias/${storyId}?sucesso=ordem-atualizada`);
 }
 
 export async function saveCharacter(formData: FormData) {
@@ -221,17 +246,23 @@ export async function saveCharacter(formData: FormData) {
       `/admin/personagens?erro=${encodeURIComponent(result.error.message)}`,
     );
   const characterId = result.data.id;
-  await client
+  const { error: deletePowersError } = await client
     .from("character_powers")
     .delete()
     .eq("character_id", characterId);
+  if (deletePowersError) {
+    revalidateCharacterPages();
+    redirect(
+      `/admin/personagens?erro=${encodeURIComponent(deletePowersError.message)}`,
+    );
+  }
   const powerLines = powers
     .split("\n")
     .map((item) => item.trim())
     .filter(Boolean);
   for (const [index, line] of powerLines.entries()) {
     const [name, ...descriptionParts] = line.split(":");
-    const { data: power } = await client
+    const { data: power, error: powerError } = await client
       .from("powers")
       .insert({
         name: name.trim(),
@@ -240,14 +271,27 @@ export async function saveCharacter(formData: FormData) {
       })
       .select("id")
       .single();
-    if (power)
-      await client.from("character_powers").insert({
+    if (powerError || !power) {
+      revalidateCharacterPages();
+      redirect(
+        `/admin/personagens?erro=${encodeURIComponent(powerError?.message ?? "Não foi possível salvar um dos poderes.")}`,
+      );
+    }
+    const { error: relationError } = await client
+      .from("character_powers")
+      .insert({
         character_id: characterId,
         power_id: power.id,
         sort_order: index + 1,
       });
+    if (relationError) {
+      revalidateCharacterPages();
+      redirect(
+        `/admin/personagens?erro=${encodeURIComponent(relationError.message)}`,
+      );
+    }
   }
-  revalidatePath("/personagens");
+  revalidateCharacterPages();
   redirect("/admin/personagens?sucesso=personagem-salvo");
 }
 export async function deleteCharacter(formData: FormData) {
@@ -256,7 +300,7 @@ export async function deleteCharacter(formData: FormData) {
   const { error } = await client.from("characters").delete().eq("id", id);
   if (error)
     redirect(`/admin/personagens?erro=${encodeURIComponent(error.message)}`);
-  revalidatePath("/personagens");
+  revalidateCharacterPages();
   redirect("/admin/personagens?sucesso=personagem-excluido");
 }
 
@@ -281,7 +325,7 @@ export async function saveGalleryItem(formData: FormData) {
     : await client.from("gallery_items").insert(payload);
   if (result.error)
     redirect(`/admin/galeria?erro=${encodeURIComponent(result.error.message)}`);
-  revalidatePath("/galeria");
+  revalidateGalleryPages();
   redirect("/admin/galeria?sucesso=imagem-salva");
 }
 export async function deleteGalleryItem(formData: FormData) {
@@ -292,6 +336,6 @@ export async function deleteGalleryItem(formData: FormData) {
   if (error)
     redirect(`/admin/galeria?erro=${encodeURIComponent(error.message)}`);
   if (path) await client.storage.from("media").remove([path]);
-  revalidatePath("/galeria");
+  revalidateGalleryPages();
   redirect("/admin/galeria?sucesso=imagem-excluida");
 }

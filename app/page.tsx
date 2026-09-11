@@ -17,6 +17,10 @@ import { EmptyState } from "@/components/empty-state";
 import { PowerBadge } from "@/components/power-badge";
 import { PublicShell } from "@/components/public-shell";
 import { SectionHeading } from "@/components/section-heading";
+import {
+  getCharacterVisualKey,
+  SPECIAL_MESSAGE_STORY_ID,
+} from "@/lib/content-identity";
 import { getCharacters, getGalleryItems, getStories } from "@/lib/data";
 
 export default async function HomePage() {
@@ -26,10 +30,10 @@ export default async function HomePage() {
     getGalleryItems(),
   ]);
   const specialMessage = stories.find(
-    (story) => story.slug === "parabens-theo",
+    (story) => story.id === SPECIAL_MESSAGE_STORY_ID,
   );
   const regularStories = stories.filter(
-    (story) => story.slug !== "parabens-theo",
+    (story) => story.id !== SPECIAL_MESSAGE_STORY_ID,
   );
   const mainStory =
     regularStories.find((story) => story.featured) ?? regularStories[0];
@@ -147,13 +151,13 @@ export default async function HomePage() {
                   title={specialMessage.title}
                   accent={specialMessage.accent}
                   imageUrl={specialMessage.coverUrl}
-                  label="Uma mensagem especial"
-                  subtitle="O Horizoncraft agora tem um lugar só dele."
+                  label={specialMessage.category}
+                  subtitle={specialMessage.synopsis}
                 />
                 <div className="birthday-copy">
-                  <Sticker>Uma mensagem especial</Sticker>
+                  <Sticker>{specialMessage.category}</Sticker>
                   <h2>{specialMessage.title}</h2>
-                  <p>O Horizoncraft agora tem um lugar só dele.</p>
+                  <p>{specialMessage.synopsis}</p>
                   <div className="birthday-rule" />
                   <p className="birthday-note">
                     Uma mensagem de abertura para celebrar Théo e tudo o que
@@ -239,24 +243,34 @@ export default async function HomePage() {
               </Link>
             </div>
             <div className="power-showcase">
-              {highlightedPowers.map(({ character, power }) => (
-                <article
-                  className={`power-poster accent-${character.accent}`}
-                  key={`${character.id}-${power.id}`}
-                >
-                  {character.slug === "caveira-vermelha" ? (
-                    <Flame />
-                  ) : character.slug === "kauan-raio" ? (
-                    <Zap />
-                  ) : character.slug === "metanic" ? (
-                    <Layers3 />
-                  ) : (
-                    <Sparkles />
-                  )}
-                  <h3>{power.name}</h3>
-                  <PowerBadge name={character.name} accent={character.accent} />
-                </article>
-              ))}
+              {highlightedPowers.map(({ character, power }) => {
+                const visualKey = getCharacterVisualKey(
+                  character.id,
+                  character.slug,
+                );
+
+                return (
+                  <article
+                    className={`power-poster accent-${character.accent}`}
+                    key={`${character.id}-${power.id}`}
+                  >
+                    {visualKey === "caveira-vermelha" ? (
+                      <Flame />
+                    ) : visualKey === "kauan-raio" ? (
+                      <Zap />
+                    ) : visualKey === "metanic" ? (
+                      <Layers3 />
+                    ) : (
+                      <Sparkles />
+                    )}
+                    <h3>{power.name}</h3>
+                    <PowerBadge
+                      name={character.name}
+                      accent={character.accent}
+                    />
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>

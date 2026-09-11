@@ -39,3 +39,7 @@ next-env.d.ts
 # editors
 .idea/
 .vscode/
+
+# local agent tooling
+/.agents/
+/skills-lock.json

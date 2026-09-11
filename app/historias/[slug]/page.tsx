@@ -11,6 +11,7 @@ import {
 import { CoverArt } from "@/components/cover-art";
 import { EmptyState } from "@/components/empty-state";
 import { PublicShell } from "@/components/public-shell";
+import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
 import { getStory } from "@/lib/data";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -37,7 +38,7 @@ export async function generateMetadata({
 export default async function StoryPage({ params }: PageProps) {
   const story = await getStory((await params).slug);
   if (!story) notFound();
-  const isSpecialMessage = story.slug === "parabens-theo";
+  const isSpecialMessage = story.id === SPECIAL_MESSAGE_STORY_ID;
   return (
     <PublicShell>
       <main>
@@ -50,12 +51,8 @@ export default async function StoryPage({ params }: PageProps) {
               title={story.title}
               accent={story.accent}
               imageUrl={story.coverUrl}
-              label={isSpecialMessage ? "Uma mensagem especial" : undefined}
-              subtitle={
-                isSpecialMessage
-                  ? "O Horizoncraft agora tem um lugar só dele."
-                  : undefined
-              }
+              label={isSpecialMessage ? story.category : undefined}
+              subtitle={isSpecialMessage ? story.synopsis : undefined}
             />
             <div>
               <div className="card-labels">
@@ -133,7 +130,7 @@ export default async function StoryPage({ params }: PageProps) {
                       <div>
                         <small>
                           {isSpecialMessage
-                            ? "Mensagem especial"
+                            ? story.category
                             : `Capítulo ${chapter.chapterNumber}`}
                         </small>
                         <h3>{chapter.title}</h3>

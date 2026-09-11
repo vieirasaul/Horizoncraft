@@ -61,6 +61,7 @@ export default async function CharacterPage({ params }: PageProps) {
             <div className="character-detail-grid">
               <div className="detail-art-frame">
                 <CharacterArtwork
+                  id={character.id}
                   name={character.name}
                   slug={character.slug}
                   accent={character.accent}

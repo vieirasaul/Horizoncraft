@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { InlineText } from "@/components/inline-text";
 import { PublicShell } from "@/components/public-shell";
 import { ReadingProgress } from "@/components/reading-progress";
+import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
 import { getStory } from "@/lib/data";
 
 type PageProps = { params: Promise<{ slug: string; chapterSlug: string }> };
@@ -19,8 +20,8 @@ export async function generateMetadata({
   );
   if (!story || !chapter) return { title: "Capítulo não encontrado" };
   const description =
-    story.slug === "parabens-theo"
-      ? "Uma mensagem especial de abertura do Horizoncraft para Théo."
+    story.id === SPECIAL_MESSAGE_STORY_ID
+      ? story.synopsis
       : `Capítulo ${chapter.chapterNumber}: ${chapter.title}, da história Horizoncraft.`;
   return {
     title: `${chapter.title} — ${story.title}`,
@@ -36,7 +37,7 @@ export default async function ChapterPage({ params }: PageProps) {
     story?.chapters.findIndex((item) => item.slug === values.chapterSlug) ?? -1;
   if (!story || chapterIndex < 0) notFound();
   const chapter = story.chapters[chapterIndex];
-  const isSpecialMessage = story.slug === "parabens-theo";
+  const isSpecialMessage = story.id === SPECIAL_MESSAGE_STORY_ID;
   const previous = story.chapters[chapterIndex - 1];
   const next = story.chapters[chapterIndex + 1];
   return (
@@ -49,7 +50,7 @@ export default async function ChapterPage({ params }: PageProps) {
           </Link>
           <span>
             {isSpecialMessage
-              ? "Uma mensagem especial"
+              ? story.category
               : `Capítulo ${chapter.chapterNumber}`}
           </span>
           <h1>{chapter.title}</h1>
