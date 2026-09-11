@@ -45,8 +45,7 @@ export default async function CharacterPage({ params }: PageProps) {
       : character.role === "villain"
         ? Swords
         : Sparkles;
-  const hasFacts =
-    character.weaknesses.length > 0 || character.curiosities.length > 0;
+  const hasFacts = character.curiosities.length > 0;
 
   return (
     <PublicShell>
@@ -129,16 +128,6 @@ export default async function CharacterPage({ params }: PageProps) {
           </div>
           {hasFacts && (
             <article className="facts-panel">
-              {character.weaknesses.length > 0 && (
-                <div>
-                  <h2>Fraquezas</h2>
-                  <ul>
-                    {character.weaknesses.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
               {character.curiosities.length > 0 && (
                 <div>
                   <h2>Curiosidades</h2>

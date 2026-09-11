@@ -18,7 +18,6 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Personagens da história"
         title="Personagens"
         description="Organize heróis, vilões, poderes e segredos."
         actionHref="/admin/personagens/novo"
@@ -48,7 +47,7 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
                 </div>
                 <Link
                   className="icon-button"
-                  href={`/admin/personagens/${character.id}`}
+                  href={`/admin/personagens/${character.slug}`}
                   aria-label={`Editar ${character.name}`}
                 >
                   <Pencil />

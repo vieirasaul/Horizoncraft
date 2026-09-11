@@ -6,7 +6,6 @@ export default async function NewStoryPage({ searchParams }: PageProps) {
   return (
     <main>
       <AdminPageHeader
-        eyebrow="História principal"
         title="Preparar Horizoncraft"
         description="Defina as informações gerais da história. Os capítulos vêm depois."
         backHref="/admin/historias"

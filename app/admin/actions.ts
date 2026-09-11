@@ -13,6 +13,9 @@ const nullableText = z
   .trim()
   .transform((value) => value || null);
 const themeColor = z.enum(["blue", "red", "yellow", "green", "violet"]);
+const databaseId = z
+  .string()
+  .regex(/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i);
 const storySchema = z.object({
   id: nullableText,
   title: requiredText,
@@ -39,7 +42,6 @@ const characterSchema = z.object({
   role: z.enum(["hero", "villain", "other"]),
   short_description: requiredText,
   biography: z.string().trim(),
-  weaknesses: z.string(),
   curiosities: z.string(),
   group_name: nullableText,
   story_slug: nullableText,
@@ -47,7 +49,10 @@ const characterSchema = z.object({
   accent: themeColor,
   sort_order: z.coerce.number().int().min(0),
   status: z.enum(["draft", "published"]),
-  powers: z.string(),
+});
+const powerSchema = z.object({
+  name: requiredText.max(100),
+  description: requiredText.max(500),
 });
 const chapterSchema = z.object({
   id: nullableText,
@@ -86,6 +91,11 @@ function revalidateCharacterPages() {
   revalidatePath("/personagens");
   revalidatePath("/personagens/[slug]", "page");
   revalidatePath("/poderes");
+}
+
+function revalidatePowerPages() {
+  revalidateCharacterPages();
+  revalidatePath("/admin/poderes");
 }
 
 function revalidateGalleryPages() {
@@ -219,15 +229,17 @@ export async function moveChapter(formData: FormData) {
 export async function saveCharacter(formData: FormData) {
   const client = await requireAdmin();
   const parsed = characterSchema.safeParse(values(formData));
-  if (!parsed.success) redirect("/admin/personagens/novo?erro=campos");
-  const { id, powers, weaknesses, curiosities, ...fields } = parsed.data;
+  const parsedPowerIds = z
+    .array(databaseId)
+    .max(50)
+    .safeParse(formData.getAll("power_ids"));
+  if (!parsed.success || !parsedPowerIds.success)
+    redirect("/admin/personagens/novo?erro=campos");
+  const { id, curiosities, ...fields } = parsed.data;
+  const powerIds = [...new Set(parsedPowerIds.data)];
   const payload = {
     ...fields,
     featured: formData.get("featured") === "on",
-    weaknesses: weaknesses
-      .split("\n")
-      .map((item) => item.trim())
-      .filter(Boolean),
     curiosities: curiosities
       .split("\n")
       .map((item) => item.trim())
@@ -256,34 +268,16 @@ export async function saveCharacter(formData: FormData) {
       `/admin/personagens?erro=${encodeURIComponent(deletePowersError.message)}`,
     );
   }
-  const powerLines = powers
-    .split("\n")
-    .map((item) => item.trim())
-    .filter(Boolean);
-  for (const [index, line] of powerLines.entries()) {
-    const [name, ...descriptionParts] = line.split(":");
-    const { data: power, error: powerError } = await client
-      .from("powers")
-      .insert({
-        name: name.trim(),
-        description:
-          descriptionParts.join(":").trim() || "Poder em desenvolvimento.",
-      })
-      .select("id")
-      .single();
-    if (powerError || !power) {
-      revalidateCharacterPages();
-      redirect(
-        `/admin/personagens?erro=${encodeURIComponent(powerError?.message ?? "Não foi possível salvar um dos poderes.")}`,
-      );
-    }
+  if (powerIds.length) {
     const { error: relationError } = await client
       .from("character_powers")
-      .insert({
-        character_id: characterId,
-        power_id: power.id,
-        sort_order: index + 1,
-      });
+      .insert(
+        powerIds.map((powerId, index) => ({
+          character_id: characterId,
+          power_id: powerId,
+          sort_order: index + 1,
+        })),
+      );
     if (relationError) {
       revalidateCharacterPages();
       redirect(
@@ -293,6 +287,32 @@ export async function saveCharacter(formData: FormData) {
   }
   revalidateCharacterPages();
   redirect("/admin/personagens?sucesso=personagem-salvo");
+}
+
+export async function createPower(formData: FormData) {
+  const client = await requireAdmin();
+  const parsed = powerSchema.safeParse(values(formData));
+  if (!parsed.success) redirect("/admin/poderes?erro=campos");
+
+  const { data: existingPowers, error: lookupError } = await client
+    .from("powers")
+    .select("name");
+  if (lookupError)
+    redirect(`/admin/poderes?erro=${encodeURIComponent(lookupError.message)}`);
+
+  const normalizedName = parsed.data.name.toLocaleLowerCase("pt-BR");
+  const alreadyExists = existingPowers?.some(
+    (power) => power.name.trim().toLocaleLowerCase("pt-BR") === normalizedName,
+  );
+  if (alreadyExists) redirect("/admin/poderes?erro=poder-existente");
+
+  const { error } = await client.from("powers").insert(parsed.data);
+  if (error?.code === "23505") redirect("/admin/poderes?erro=poder-existente");
+  if (error)
+    redirect(`/admin/poderes?erro=${encodeURIComponent(error.message)}`);
+
+  revalidatePowerPages();
+  redirect("/admin/poderes?sucesso=poder-criado");
 }
 export async function deleteCharacter(formData: FormData) {
   const client = await requireAdmin();

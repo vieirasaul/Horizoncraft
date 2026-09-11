@@ -28,7 +28,6 @@ export default async function NewChapterPage({
   return (
     <main>
       <AdminPageHeader
-        eyebrow={story.title}
         title="Novo capítulo"
         description="Escreva em blocos simples e publique somente quando terminar."
         backHref={`/admin/historias/${id}`}

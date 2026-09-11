@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { BookOpen, Images, Plus, Users } from "lucide-react";
+import { BookOpen, Images, Plus, Sparkles, Users } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
   const { client } = await getAuthenticatedAdmin();
   if (!client) return null;
-  const [stories, characters, gallery] = await Promise.all([
+  const [stories, characters, powers, gallery] = await Promise.all([
     client!.from("stories").select("id,status"),
     client!.from("characters").select("id,status"),
+    client!.from("powers").select("id"),
     client!.from("gallery_items").select("id,status"),
   ]);
   const cards = [
@@ -17,30 +18,33 @@ export default async function DashboardPage() {
       icon: BookOpen,
       href: "/admin/historias",
       count: stories.data?.length ?? 0,
-      drafts:
-        stories.data?.filter((item) => item.status === "draft").length ?? 0,
+      detail: `${stories.data?.filter((item) => item.status === "draft").length ?? 0} em rascunho`,
     },
     {
       label: "Personagens",
       icon: Users,
       href: "/admin/personagens",
       count: characters.data?.length ?? 0,
-      drafts:
-        characters.data?.filter((item) => item.status === "draft").length ?? 0,
+      detail: `${characters.data?.filter((item) => item.status === "draft").length ?? 0} em rascunho`,
+    },
+    {
+      label: "Poderes",
+      icon: Sparkles,
+      href: "/admin/poderes",
+      count: powers.data?.length ?? 0,
+      detail: "cadastrados",
     },
     {
       label: "Desenhos",
       icon: Images,
       href: "/admin/galeria",
       count: gallery.data?.length ?? 0,
-      drafts:
-        gallery.data?.filter((item) => item.status === "draft").length ?? 0,
+      detail: `${gallery.data?.filter((item) => item.status === "draft").length ?? 0} em rascunho`,
     },
   ];
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Horizoncraft"
         title="Visão geral"
         description="Organize os capítulos, personagens, poderes e desenhos da história."
       />
@@ -54,7 +58,7 @@ export default async function DashboardPage() {
                 <span>
                   <small>{card.label}</small>
                   <strong>{card.count}</strong>
-                  <em>{card.drafts} em rascunho</em>
+                  <em>{card.detail}</em>
                 </span>
               </Link>
             );
@@ -68,6 +72,9 @@ export default async function DashboardPage() {
             </Link>
             <Link href="/admin/personagens/novo">
               <Plus /> Novo personagem
+            </Link>
+            <Link href="/admin/poderes">
+              <Plus /> Novo poder
             </Link>
             <Link href="/admin/galeria/novo">
               <Plus /> Novo desenho

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Upload } from "lucide-react";
 import { deleteGalleryItem } from "@/app/admin/actions";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
@@ -17,7 +17,6 @@ export default async function AdminGalleryPage({ searchParams }: PageProps) {
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Desenhos da história"
         title="Galeria"
         description="Envie desenhos e relacione cada arte ao Horizoncraft."
         actionHref="/admin/galeria/novo"
@@ -60,7 +59,7 @@ export default async function AdminGalleryPage({ searchParams }: PageProps) {
             <h2>Envie o primeiro desenho quando ele estiver pronto.</h2>
             <p>Use um arquivo JPEG, PNG ou WebP com até 3 MB.</p>
             <Link className="admin-primary" href="/admin/galeria/novo">
-              <Plus /> Enviar desenho
+              <Upload aria-hidden="true" /> Enviar desenho
             </Link>
           </div>
         )}

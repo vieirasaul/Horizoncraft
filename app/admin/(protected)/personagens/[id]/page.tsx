@@ -13,30 +13,39 @@ export default async function EditCharacterPage({
 }: PageProps) {
   const { client } = await getAuthenticatedAdmin();
   if (!client) return null;
-  const { data: character } = await client!
-    .from("characters")
-    .select("*,character_powers(powers(name,description))")
-    .eq("id", (await params).id)
-    .single();
+  const identifier = (await params).id;
+  const identifierColumn =
+    /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(identifier)
+      ? "id"
+      : "slug";
+  const [{ data: character }, { data: powers }] = await Promise.all([
+    client
+      .from("characters")
+      .select(
+        "*,character_powers(power_id,sort_order,powers(id,name,description))",
+      )
+      .eq(identifierColumn, identifier)
+      .single(),
+    client.from("powers").select("id,name,description").order("name"),
+  ]);
   if (!character) notFound();
+  const characterPowers = [...(character.character_powers ?? [])].sort(
+    (first, second) => first.sort_order - second.sort_order,
+  );
   const value = {
     ...character,
-    powers: (character.character_powers ?? []).map(
-      (relation: { powers: { name: string; description: string } }) =>
-        relation.powers,
-    ),
+    powers: characterPowers.map((relation) => relation.powers),
   };
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Editar personagem"
         title={character.name}
         description="Mantenha os detalhes e poderes deste personagem atualizados."
         backHref="/admin/personagens"
       />
       <section className="admin-content admin-form-wrap">
         <Notice error={(await searchParams).erro} />
-        <CharacterForm character={value} />
+        <CharacterForm character={value} availablePowers={powers ?? []} />
       </section>
     </main>
   );

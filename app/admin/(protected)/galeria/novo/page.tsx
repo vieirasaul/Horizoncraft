@@ -6,7 +6,6 @@ export default async function NewGalleryItemPage({ searchParams }: PageProps) {
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Nova imagem"
         title="Enviar desenho"
         description="Escolha o arquivo, confira a prévia e complete as informações."
         backHref="/admin/galeria"

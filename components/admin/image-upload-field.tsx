@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import Image from "next/image";
-import { ImagePlus, Trash2 } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -131,7 +131,7 @@ export function ImageUploadField({
           disabled={busy}
           onClick={() => inputRef.current?.click()}
         >
-          <ImagePlus />{" "}
+          <Upload aria-hidden="true" />{" "}
           {busy ? "Enviando…" : path ? "Substituir" : "Escolher imagem"}
         </button>
         {path && (

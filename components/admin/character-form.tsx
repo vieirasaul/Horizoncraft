@@ -1,5 +1,9 @@
 import { saveCharacter } from "@/app/admin/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import {
+  PowerSelectField,
+  type PowerOption,
+} from "@/components/admin/power-select-field";
 import { SubmitButton } from "@/components/admin/submit-button";
 
 type CharacterValue = {
@@ -9,7 +13,6 @@ type CharacterValue = {
   role?: string;
   short_description?: string;
   biography?: string;
-  weaknesses?: string[];
   curiosities?: string[];
   group_name?: string | null;
   story_slug?: string | null;
@@ -18,12 +21,14 @@ type CharacterValue = {
   sort_order?: number;
   featured?: boolean;
   status?: string;
-  powers?: Array<{ name: string; description: string }>;
+  powers?: PowerOption[];
 };
 export function CharacterForm({
   character = {},
+  availablePowers,
 }: {
   character?: CharacterValue;
+  availablePowers: PowerOption[];
 }) {
   return (
     <form action={saveCharacter} className="admin-form admin-editor-form">
@@ -104,32 +109,10 @@ export function CharacterForm({
           placeholder="Pode ser preenchida quando houver mais detalhes confirmados."
         />
       </label>
-      <div className="form-grid">
-        <label>
-          Poderes
-          <textarea
-            name="powers"
-            defaultValue={character.powers
-              ?.map((power) => `${power.name}: ${power.description}`)
-              .join("\n")}
-            rows={6}
-            placeholder="Nome do poder: descrição do poder"
-          />
-          <small>
-            Escreva um poder por linha, separando nome e descrição com
-            dois-pontos.
-          </small>
-        </label>
-        <label>
-          Fraquezas
-          <textarea
-            name="weaknesses"
-            defaultValue={character.weaknesses?.join("\n")}
-            rows={6}
-            placeholder="Uma fraqueza por linha"
-          />
-        </label>
-      </div>
+      <PowerSelectField
+        powers={availablePowers}
+        initialPowerIds={character.powers?.map((power) => power.id)}
+      />
       <label>
         Curiosidades
         <textarea

@@ -6,6 +6,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  Sparkles,
   Users,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
@@ -53,6 +54,9 @@ export default async function AdminLayout({
           </Link>
           <Link href="/admin/personagens">
             <Users /> Personagens
+          </Link>
+          <Link href="/admin/poderes">
+            <Sparkles /> Poderes
           </Link>
           <Link href="/admin/galeria">
             <Images /> Galeria

@@ -27,7 +27,6 @@ export default async function EditChapterPage({
   return (
     <main>
       <AdminPageHeader
-        eyebrow={story.title}
         title={`Capítulo ${chapter.chapter_number}`}
         description="Ajuste o conteúdo, salve como rascunho ou publique."
         backHref={`/admin/historias/${values.id}`}

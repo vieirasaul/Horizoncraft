@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, LogIn, Menu } from "lucide-react";
+import { LogIn, Menu } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
 export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
@@ -21,16 +21,13 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
       </Link>
       <nav className="desktop-navigation" aria-label="Navegação principal">
         <Link href="/">Início</Link>
-        <Link href="/historias">A história</Link>
+        <Link href="/historias">Capítulos</Link>
         <Link href="/personagens">Personagens</Link>
         <Link href="/poderes">Poderes</Link>
         <Link href="/galeria">Galeria</Link>
-        <Link className="account-link" href={accountHref}>
-          <LogIn size={16} /> {accountLabel}
-        </Link>
       </nav>
-      <Link className="header-action" href="/historias">
-        Começar a história <ArrowRight size={16} />
+      <Link className="header-action" href={accountHref}>
+        <LogIn size={16} /> {accountLabel}
       </Link>
       <details className="mobile-navigation">
         <summary aria-label="Abrir menu">
@@ -38,7 +35,7 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
         </summary>
         <nav aria-label="Navegação para celular">
           <Link href="/">Início</Link>
-          <Link href="/historias">A história</Link>
+          <Link href="/historias">Capítulos</Link>
           <Link href="/personagens">Personagens</Link>
           <Link href="/poderes">Poderes</Link>
           <Link href="/galeria">Galeria</Link>

@@ -22,7 +22,6 @@ export default async function EditGalleryItemPage({
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Editar imagem"
         title={item.title}
         description="Atualize a legenda, relação ou estado de publicação."
         backHref="/admin/galeria"

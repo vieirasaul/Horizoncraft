@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 export function AdminPageHeader({
-  eyebrow,
   title,
   description,
   backHref,
   actionHref,
   actionLabel,
 }: {
-  eyebrow: string;
   title: string;
   description: string;
   backHref?: string;
@@ -17,23 +15,20 @@ export function AdminPageHeader({
 }) {
   return (
     <header className="admin-page-header">
-      {backHref && (
-        <Link className="admin-back" href={backHref}>
-          <ArrowLeft /> Voltar
-        </Link>
-      )}
-      <p>{eyebrow}</p>
-      <div>
-        <span>
-          <h1>{title}</h1>
-          <small>{description}</small>
-        </span>
-        {actionHref && actionLabel && (
-          <Link className="admin-primary" href={actionHref}>
-            {actionLabel}
+      <div className="admin-page-heading">
+        {backHref && (
+          <Link className="admin-back" href={backHref}>
+            <ArrowLeft aria-hidden="true" /> Voltar
           </Link>
         )}
+        <h1>{title}</h1>
+        <p className="admin-page-description">{description}</p>
       </div>
+      {actionHref && actionLabel && (
+        <Link className="admin-primary" href={actionHref}>
+          <Plus aria-hidden="true" /> {actionLabel}
+        </Link>
+      )}
     </header>
   );
 }

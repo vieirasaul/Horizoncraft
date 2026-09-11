@@ -18,7 +18,6 @@ export default async function AdminStoriesPage({ searchParams }: PageProps) {
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Conteúdo"
         title="A história"
         description="Organize a história de Horizoncraft e seus capítulos."
         actionHref="/admin/historias/nova"

@@ -31,7 +31,6 @@ export default async function EditStoryPage({
   return (
     <main>
       <AdminPageHeader
-        eyebrow="Editar aventura"
         title={story.title}
         description="Atualize a história e organize os capítulos."
         backHref="/admin/historias"
