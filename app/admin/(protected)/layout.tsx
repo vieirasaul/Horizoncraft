@@ -9,6 +9,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import { AdminMobileNavigation } from "@/components/admin/mobile-navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { Notice } from "@/components/admin/notice";
 import { signOut } from "@/app/admin/actions";
@@ -75,6 +76,10 @@ export default async function AdminLayout({
             </button>
           </form>
         </div>
+        <AdminMobileNavigation
+          displayName={profile?.display_name ?? "Criador"}
+          signOutAction={signOut}
+        />
       </aside>
       <div className="admin-main">
         <Notice success={success?.message} noticeId={success?.id} />

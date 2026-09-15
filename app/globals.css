@@ -2564,6 +2564,9 @@ h3 {
   border-top: 1px solid #44506a;
   padding-top: 12px;
 }
+.admin-mobile-navigation {
+  display: none;
+}
 .admin-main {
   min-width: 0;
 }
@@ -3442,18 +3445,96 @@ h3 {
     grid-template-columns: 1fr;
   }
   .admin-sidebar {
-    position: relative;
+    position: sticky;
+    z-index: 100;
+    flex-direction: row;
+    align-items: center;
     height: auto;
+    min-height: 72px;
+    padding: 10px 16px;
+    border-right: 0;
+    border-bottom: var(--line);
   }
-  .admin-sidebar nav {
-    grid-template-columns: repeat(3, 1fr);
+  .admin-sidebar > .admin-brand {
+    margin: 0;
   }
-  .admin-sidebar nav a {
-    justify-content: center;
+  .admin-sidebar > p,
+  .admin-sidebar > nav,
+  .admin-sidebar > .sidebar-bottom {
+    display: none;
   }
-  .sidebar-bottom {
+  .admin-mobile-navigation {
+    position: relative;
+    display: block;
+    margin-left: auto;
+  }
+  .admin-mobile-navigation summary {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 44px;
+    color: var(--ink);
+    background: var(--yellow);
+    border: 2px solid var(--white);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--white);
+    list-style: none;
+  }
+  .admin-mobile-navigation summary::-webkit-details-marker {
+    display: none;
+  }
+  .admin-mobile-navigation summary svg {
+    width: 22px;
+    height: 22px;
+  }
+  .admin-mobile-menu {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    width: min(300px, calc(100vw - 32px));
+    padding: 12px;
+    background: var(--ink);
+    border: 2px solid var(--white);
+    border-radius: 14px;
+    box-shadow: 7px 7px 0 rgb(20 29 51 / 30%);
+  }
+  .admin-mobile-menu > p {
+    margin: 2px 10px 10px;
+    color: #cdd6e9;
+    font-size: 0.82rem;
+  }
+  .admin-mobile-menu nav {
+    grid-template-columns: 1fr;
+  }
+  .admin-mobile-menu nav a {
+    justify-content: flex-start;
+  }
+  .admin-mobile-actions {
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    margin-top: 20px;
+    gap: 6px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #44506a;
+  }
+  .admin-mobile-actions a,
+  .admin-mobile-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    color: var(--white);
+    background: #293655;
+    border: 0;
+    border-radius: 9px;
+    font-weight: 800;
+  }
+  .admin-mobile-actions svg {
+    width: 17px;
+    height: 17px;
   }
   .form-grid,
   .form-grid-three,
@@ -3708,9 +3789,6 @@ h3 {
   }
   .footer-bottom {
     flex-direction: column;
-  }
-  .admin-sidebar nav {
-    grid-template-columns: repeat(2, 1fr);
   }
   .admin-page-header {
     display: block;
