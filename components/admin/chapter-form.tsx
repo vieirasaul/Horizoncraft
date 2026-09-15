@@ -23,6 +23,7 @@ export function ChapterForm({
     <form action={saveChapter} className="admin-form admin-editor-form">
       <input type="hidden" name="id" value={chapter.id ?? ""} />
       <input type="hidden" name="story_id" value={storyId} />
+      <input type="hidden" name="current_slug" value={chapter.slug ?? ""} />
       <div className="form-grid form-grid-three">
         <label>
           Título

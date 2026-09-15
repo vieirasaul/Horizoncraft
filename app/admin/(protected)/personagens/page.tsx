@@ -5,7 +5,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
-type PageProps = { searchParams: Promise<{ sucesso?: string; erro?: string }> };
+type PageProps = { searchParams: Promise<{ erro?: string }> };
 export default async function AdminCharactersPage({ searchParams }: PageProps) {
   const { client } = await getAuthenticatedAdmin();
   if (!client) return null;
@@ -24,7 +24,7 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
         actionLabel="Novo personagem"
       />
       <section className="admin-content">
-        <Notice success={query.sucesso} error={query.erro} />
+        <Notice error={query.erro} />
         {characters?.length ? (
           <div className="admin-list">
             {characters.map((character) => (

@@ -105,8 +105,18 @@ export async function getStories(): Promise<Story[]> {
   );
 }
 
-export async function getStory(slug: string) {
-  return (await getStories()).find((story) => story.slug === slug) ?? null;
+export async function getChapter(slug: string) {
+  const stories = await getStories();
+
+  for (const story of stories) {
+    const chapterIndex = story.chapters.findIndex(
+      (chapter) => chapter.slug === slug,
+    );
+
+    if (chapterIndex >= 0) return { story, chapterIndex };
+  }
+
+  return null;
 }
 
 export async function getCharacters(): Promise<Character[]> {
@@ -163,17 +173,34 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
   noStore();
   const client = createPublicSupabaseClient();
   if (!client) return demoGallery;
-  const { data, error } = await client
-    .from("gallery_items")
-    .select("*")
-    .eq("status", "published")
-    .order("created_at", { ascending: false });
-  if (error) {
-    console.error("Could not load gallery:", error.message);
-    return [];
-  }
-  return (await Promise.all(
-    data.map(async (row) => ({
+
+  const [galleryResult, characterResult] = await Promise.all([
+    client
+      .from("gallery_items")
+      .select("*")
+      .eq("status", "published")
+      .order("created_at", { ascending: false }),
+    client
+      .from("characters")
+      .select("id,name,short_description,image_path,accent,status,created_at")
+      .eq("status", "published")
+      .not("image_path", "is", null)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  if (galleryResult.error)
+    console.error("Could not load gallery:", galleryResult.error.message);
+  if (characterResult.error)
+    console.error(
+      "Could not load character artwork:",
+      characterResult.error.message,
+    );
+
+  const galleryRows = galleryResult.data ?? [];
+  const characterRows = characterResult.data ?? [];
+  const galleryPaths = new Set(galleryRows.map((row) => row.image_path));
+  const galleryItems = await Promise.all(
+    galleryRows.map(async (row) => ({
       id: row.id,
       title: row.title,
       caption: row.caption,
@@ -184,5 +211,29 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
       createdAt: row.created_at,
       accent: row.accent,
     })),
-  )) as GalleryItem[];
+  );
+  const characterItems = await Promise.all(
+    characterRows
+      .filter(
+        (row): row is typeof row & { image_path: string } =>
+          Boolean(row.image_path) && !galleryPaths.has(row.image_path),
+      )
+      .map(async (row) => ({
+        id: `character-${row.id}`,
+        title: row.name,
+        caption: row.short_description,
+        imageUrl: await signMediaPath(client, row.image_path),
+        relatedLabel: "Personagem",
+        relatedType: "character" as const,
+        status: row.status,
+        createdAt: row.created_at,
+        accent: row.accent,
+      })),
+  );
+
+  return [...galleryItems, ...characterItems].sort(
+    (first, second) =>
+      new Date(second.createdAt).getTime() -
+      new Date(first.createdAt).getTime(),
+  ) as GalleryItem[];
 }

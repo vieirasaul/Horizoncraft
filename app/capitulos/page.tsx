@@ -1,35 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
-import { CoverArt } from "@/components/cover-art";
+import { ArrowRight, BookOpen } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { PublicShell } from "@/components/public-shell";
-import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
 import { getStories } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "A história",
+  title: "Capítulos",
   description:
     "Leia os capítulos publicados da história de Horizoncraft em sequência.",
 };
 
-export default async function StoryPage() {
+export default async function ChaptersPage() {
   const stories = await getStories();
-  const specialMessage = stories.find(
-    (story) => story.id === SPECIAL_MESSAGE_STORY_ID,
-  );
-  const regularStories = stories.filter(
-    (story) => story.id !== SPECIAL_MESSAGE_STORY_ID,
-  );
-  const mainStory =
-    regularStories.find((story) => story.featured) ?? regularStories[0];
-  const chapters = (
-    mainStory
-      ? mainStory.chapters.map((chapter) => ({ story: mainStory, chapter }))
-      : []
-  ).sort(
-    (first, second) =>
-      first.chapter.chapterNumber - second.chapter.chapterNumber,
+  const mainStory = stories.find((story) => story.featured) ?? stories[0];
+  const chapters = [...(mainStory?.chapters ?? [])].sort(
+    (first, second) => first.chapterNumber - second.chapterNumber,
   );
 
   return (
@@ -55,9 +41,9 @@ export default async function StoryPage() {
           </div>
           {chapters.length ? (
             <ol className="chapter-list">
-              {chapters.map(({ story, chapter }) => (
+              {chapters.map((chapter) => (
                 <li key={chapter.id}>
-                  <Link href={`/historias/${story.slug}/${chapter.slug}`}>
+                  <Link href={`/capitulos/${chapter.slug}`}>
                     <span>
                       {String(chapter.chapterNumber).padStart(2, "0")}
                     </span>
@@ -77,33 +63,6 @@ export default async function StoryPage() {
             />
           )}
         </section>
-
-        {specialMessage && specialMessage.chapters[0] && (
-          <section className="special-message-section">
-            <div className="page-width special-message-card">
-              <CoverArt
-                title={specialMessage.title}
-                accent={specialMessage.accent}
-                imageUrl={specialMessage.coverUrl}
-                label={specialMessage.category}
-                subtitle={specialMessage.synopsis}
-              />
-              <div>
-                <p className="section-kicker">
-                  <Sparkles size={15} /> {specialMessage.category}
-                </p>
-                <h2>{specialMessage.title}</h2>
-                <p>{specialMessage.synopsis}</p>
-                <Link
-                  className="button button-yellow"
-                  href={`/historias/${specialMessage.slug}/${specialMessage.chapters[0].slug}`}
-                >
-                  Ler a mensagem <ArrowRight aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </section>
-        )}
       </main>
     </PublicShell>
   );

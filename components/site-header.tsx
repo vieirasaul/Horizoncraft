@@ -21,7 +21,7 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
       </Link>
       <nav className="desktop-navigation" aria-label="Navegação principal">
         <Link href="/">Início</Link>
-        <Link href="/historias">Capítulos</Link>
+        <Link href="/capitulos">Capítulos</Link>
         <Link href="/personagens">Personagens</Link>
         <Link href="/poderes">Poderes</Link>
         <Link href="/galeria">Galeria</Link>
@@ -35,7 +35,7 @@ export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
         </summary>
         <nav aria-label="Navegação para celular">
           <Link href="/">Início</Link>
-          <Link href="/historias">Capítulos</Link>
+          <Link href="/capitulos">Capítulos</Link>
           <Link href="/personagens">Personagens</Link>
           <Link href="/poderes">Poderes</Link>
           <Link href="/galeria">Galeria</Link>

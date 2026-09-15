@@ -19,7 +19,7 @@ export function SiteFooter({ isAuthenticated }: { isAuthenticated: boolean }) {
         </div>
         <nav aria-label="Links do rodapé">
           <Link href="/">Início</Link>
-          <Link href="/historias">Capítulos</Link>
+          <Link href="/capitulos">Capítulos</Link>
           <Link href="/personagens">Personagens</Link>
           <Link href="/poderes">Poderes</Link>
           <Link href="/galeria">Galeria</Link>

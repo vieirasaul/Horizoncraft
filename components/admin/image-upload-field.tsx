@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Trash2, Upload } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
@@ -34,9 +34,45 @@ export function ImageUploadField({
 }) {
   const [path, setPath] = useState(initialPath ?? "");
   const [preview, setPreview] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(Boolean(initialPath));
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadInitialPreview() {
+      if (!initialPath) {
+        setPreviewLoading(false);
+        return;
+      }
+      if (initialPath.startsWith("https://")) {
+        setPreview(initialPath);
+        setPreviewLoading(false);
+        return;
+      }
+
+      const client = createBrowserSupabaseClient();
+      if (!client) {
+        setPreviewLoading(false);
+        return;
+      }
+      const { data, error } = await client.storage
+        .from("media")
+        .createSignedUrl(initialPath, 60 * 60);
+      if (!active) return;
+      if (error) setMessage("Não foi possível carregar a imagem atual.");
+      else setPreview(data.signedUrl);
+      setPreviewLoading(false);
+    }
+
+    void loadInitialPreview();
+    return () => {
+      active = false;
+    };
+  }, [initialPath]);
+
   async function upload(file: File) {
     setMessage("");
     if (!allowedTypes.includes(file.type))
@@ -47,6 +83,7 @@ export function ImageUploadField({
     if (!client)
       return setMessage("Configure o Supabase antes de enviar imagens.");
     setBusy(true);
+    setPreviewLoading(false);
     setPreview(URL.createObjectURL(file));
     try {
       const {
@@ -107,7 +144,9 @@ export function ImageUploadField({
         }}
       />
       <div className="upload-preview">
-        {preview ? (
+        {previewLoading ? (
+          <span>Carregando...</span>
+        ) : preview ? (
           <Image
             src={preview}
             alt="Prévia da imagem selecionada"
@@ -128,10 +167,11 @@ export function ImageUploadField({
       <div className="upload-actions">
         <button
           type="button"
+          className="admin-primary upload-button"
           disabled={busy}
           onClick={() => inputRef.current?.click()}
         >
-          <Upload aria-hidden="true" />{" "}
+          <Upload aria-hidden="true" />
           {busy ? "Enviando…" : path ? "Substituir" : "Escolher imagem"}
         </button>
         {path && (

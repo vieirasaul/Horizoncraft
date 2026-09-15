@@ -20,7 +20,7 @@ import { PublicShell } from "@/components/public-shell";
 import { SectionHeading } from "@/components/section-heading";
 import {
   getCharacterVisualKey,
-  SPECIAL_MESSAGE_STORY_ID,
+  SPECIAL_MESSAGE_CHAPTER_ID,
 } from "@/lib/content-identity";
 import { getCharacters, getGalleryItems, getStories } from "@/lib/data";
 
@@ -30,14 +30,10 @@ export default async function HomePage() {
     getCharacters(),
     getGalleryItems(),
   ]);
-  const specialMessage = stories.find(
-    (story) => story.id === SPECIAL_MESSAGE_STORY_ID,
+  const mainStory = stories.find((story) => story.featured) ?? stories[0];
+  const specialMessage = mainStory?.chapters.find(
+    (chapter) => chapter.id === SPECIAL_MESSAGE_CHAPTER_ID,
   );
-  const regularStories = stories.filter(
-    (story) => story.id !== SPECIAL_MESSAGE_STORY_ID,
-  );
-  const mainStory =
-    regularStories.find((story) => story.featured) ?? regularStories[0];
   const storyChapters = (
     mainStory
       ? mainStory.chapters.map((chapter) => ({ story: mainStory, chapter }))
@@ -48,8 +44,8 @@ export default async function HomePage() {
   );
   const firstChapter = storyChapters[0];
   const storyHref = firstChapter
-    ? `/historias/${firstChapter.story.slug}/${firstChapter.chapter.slug}`
-    : "/historias";
+    ? `/capitulos/${firstChapter.chapter.slug}`
+    : "/capitulos";
   const selectedCharacters = (
     characters.some((character) => character.featured)
       ? characters.filter((character) => character.featured)
@@ -140,35 +136,32 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {specialMessage && (
+        {mainStory && specialMessage && (
           <section className="birthday-feature">
             <HalftonePattern className="birthday-dots" />
             <div className="page-width">
               <article className="birthday-card">
                 <CoverArt
                   title={specialMessage.title}
-                  accent={specialMessage.accent}
-                  imageUrl={specialMessage.coverUrl}
-                  label={specialMessage.category}
-                  subtitle={specialMessage.synopsis}
+                  accent={mainStory.accent}
+                  imageUrl={mainStory.coverUrl}
+                  label="Mensagem especial"
+                  subtitle="Uma mensagem de abertura para celebrar Théo."
                 />
                 <div className="birthday-copy">
-                  <Sticker>{specialMessage.category}</Sticker>
+                  <Sticker>Mensagem especial</Sticker>
                   <h2>{specialMessage.title}</h2>
-                  <p>{specialMessage.synopsis}</p>
-                  <div className="birthday-rule" />
                   <p className="birthday-note">
                     Uma mensagem de abertura para celebrar Théo e tudo o que
                     ainda será contado nesta história.
                   </p>
-                  {specialMessage.chapters[0] && (
-                    <Link
-                      className="button button-yellow"
-                      href={`/historias/${specialMessage.slug}/${specialMessage.chapters[0].slug}`}
-                    >
-                      Ler a mensagem <BookOpen aria-hidden="true" />
-                    </Link>
-                  )}
+                  <div className="birthday-rule" />
+                  <Link
+                    className="button button-yellow"
+                    href={`/capitulos/${specialMessage.slug}`}
+                  >
+                    Ler a mensagem <BookOpen aria-hidden="true" />
+                  </Link>
                 </div>
               </article>
             </div>
@@ -194,7 +187,7 @@ export default async function HomePage() {
             />
           )}
           <div className="home-section-actions">
-            <Link className="button button-secondary" href="/historias">
+            <Link className="button button-secondary" href="/capitulos">
               Conhecer a história <ArrowRight aria-hidden="true" />
             </Link>
           </div>

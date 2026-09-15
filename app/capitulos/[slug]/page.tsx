@@ -6,23 +6,17 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { InlineText } from "@/components/inline-text";
 import { PublicShell } from "@/components/public-shell";
 import { ReadingProgress } from "@/components/reading-progress";
-import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
-import { getStory } from "@/lib/data";
+import { getChapter } from "@/lib/data";
 
-type PageProps = { params: Promise<{ slug: string; chapterSlug: string }> };
+type PageProps = { params: Promise<{ slug: string }> };
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const values = await params;
-  const story = await getStory(values.slug);
-  const chapter = story?.chapters.find(
-    (item) => item.slug === values.chapterSlug,
-  );
-  if (!story || !chapter) return { title: "Capítulo não encontrado" };
-  const description =
-    story.id === SPECIAL_MESSAGE_STORY_ID
-      ? story.synopsis
-      : `Capítulo ${chapter.chapterNumber}: ${chapter.title}, da história Horizoncraft.`;
+  const result = await getChapter((await params).slug);
+  if (!result) return { title: "Capítulo não encontrado" };
+  const { story, chapterIndex } = result;
+  const chapter = story.chapters[chapterIndex];
+  const description = `Capítulo ${chapter.chapterNumber}: ${chapter.title}, da história Horizoncraft.`;
   return {
     title: `${chapter.title} — ${story.title}`,
     description,
@@ -30,29 +24,24 @@ export async function generateMetadata({
     twitter: { title: chapter.title, description, images: [] },
   };
 }
+
 export default async function ChapterPage({ params }: PageProps) {
-  const values = await params;
-  const story = await getStory(values.slug);
-  const chapterIndex =
-    story?.chapters.findIndex((item) => item.slug === values.chapterSlug) ?? -1;
-  if (!story || chapterIndex < 0) notFound();
+  const result = await getChapter((await params).slug);
+  if (!result) notFound();
+  const { story, chapterIndex } = result;
   const chapter = story.chapters[chapterIndex];
-  const isSpecialMessage = story.id === SPECIAL_MESSAGE_STORY_ID;
   const previous = story.chapters[chapterIndex - 1];
   const next = story.chapters[chapterIndex + 1];
+
   return (
     <PublicShell>
       <ReadingProgress />
       <main className="reader">
         <header className="reader-header">
-          <Link href={`/historias/${story.slug}`}>
-            <ArrowLeft size={17} /> Voltar para {story.title}
+          <Link href="/capitulos">
+            <ArrowLeft size={17} /> Voltar para os capítulos
           </Link>
-          <span>
-            {isSpecialMessage
-              ? story.category
-              : `Capítulo ${chapter.chapterNumber}`}
-          </span>
+          <span>Capítulo {chapter.chapterNumber}</span>
           <h1>{chapter.title}</h1>
         </header>
         <article className="chapter-content">
@@ -112,7 +101,7 @@ export default async function ChapterPage({ params }: PageProps) {
           aria-label="Navegação entre capítulos"
         >
           {previous ? (
-            <Link href={`/historias/${story.slug}/${previous.slug}`}>
+            <Link href={`/capitulos/${previous.slug}`}>
               <ArrowLeft />
               <span>
                 <small>Anterior</small>
@@ -123,10 +112,7 @@ export default async function ChapterPage({ params }: PageProps) {
             <span />
           )}
           {next ? (
-            <Link
-              className="next"
-              href={`/historias/${story.slug}/${next.slug}`}
-            >
+            <Link className="next" href={`/capitulos/${next.slug}`}>
               <span>
                 <small>Próximo</small>
                 {next.title}
@@ -134,12 +120,10 @@ export default async function ChapterPage({ params }: PageProps) {
               <ArrowRight />
             </Link>
           ) : (
-            <Link className="next" href={`/historias/${story.slug}`}>
+            <Link className="next" href="/capitulos">
               <span>
-                <small>
-                  {isSpecialMessage ? "Fim da mensagem" : "Fim do capítulo"}
-                </small>
-                Voltar à história
+                <small>Fim do capítulo</small>
+                Voltar aos capítulos
               </span>
               <ArrowRight />
             </Link>

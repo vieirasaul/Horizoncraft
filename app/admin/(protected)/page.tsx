@@ -7,18 +7,24 @@ export default async function DashboardPage() {
   const { client } = await getAuthenticatedAdmin();
   if (!client) return null;
   const [stories, characters, powers, gallery] = await Promise.all([
-    client!.from("stories").select("id,status"),
+    client!
+      .from("stories")
+      .select("id,chapters(id,status)")
+      .order("featured", { ascending: false })
+      .order("created_at", { ascending: true })
+      .limit(1),
     client!.from("characters").select("id,status"),
     client!.from("powers").select("id"),
     client!.from("gallery_items").select("id,status"),
   ]);
+  const chapters = stories.data?.[0]?.chapters ?? [];
   const cards = [
     {
-      label: "A história",
+      label: "Capítulos",
       icon: BookOpen,
-      href: "/admin/historias",
-      count: stories.data?.length ?? 0,
-      detail: `${stories.data?.filter((item) => item.status === "draft").length ?? 0} em rascunho`,
+      href: "/admin/capitulos",
+      count: chapters.length,
+      detail: `${chapters.filter((item) => item.status === "draft").length} em rascunho`,
     },
     {
       label: "Personagens",
@@ -67,8 +73,9 @@ export default async function DashboardPage() {
         <div className="quick-create">
           <h2>O que você quer adicionar hoje?</h2>
           <div>
-            <Link href="/admin/historias/nova">
-              <Plus /> Preparar a história
+            <Link href="/admin/capitulos/novo">
+              <Plus />
+              Novo capítulo
             </Link>
             <Link href="/admin/personagens/novo">
               <Plus /> Novo personagem

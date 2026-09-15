@@ -81,7 +81,14 @@ export function StoryBrowser({ stories }: { stories: Story[] }) {
                       : story.category}
                   </span>
                 </div>
-                <Link className="text-link" href={`/historias/${story.slug}`}>
+                <Link
+                  className="text-link"
+                  href={
+                    story.chapters[0]
+                      ? `/capitulos/${story.chapters[0].slug}`
+                      : "/capitulos"
+                  }
+                >
                   Conhecer a história <ArrowRight size={18} />
                 </Link>
               </div>

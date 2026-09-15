@@ -2,10 +2,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { setAdminSuccess, type AdminSuccessCode } from "@/lib/admin-flash";
 import {
   getAuthenticatedAdmin,
   createServerSupabaseClient,
 } from "@/lib/supabase/server";
+import { databaseIdSchema } from "@/lib/validation";
 
 const requiredText = z.string().trim().min(1);
 const nullableText = z
@@ -13,24 +15,11 @@ const nullableText = z
   .trim()
   .transform((value) => value || null);
 const themeColor = z.enum(["blue", "red", "yellow", "green", "violet"]);
-const databaseId = z
+const slugSchema = z
   .string()
-  .regex(/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i);
-const storySchema = z.object({
-  id: nullableText,
-  title: requiredText,
-  slug: z
-    .string()
-    .trim()
-    .min(1)
-    .regex(/^[a-z0-9-]+$/),
-  synopsis: requiredText,
-  category: requiredText,
-  progress: z.enum(["ongoing", "complete", "paused"]),
-  status: z.enum(["draft", "published"]),
-  accent: themeColor,
-  cover_path: nullableText,
-});
+  .trim()
+  .min(1)
+  .regex(/^[a-z0-9-]+$/);
 const characterSchema = z.object({
   id: nullableText,
   name: requiredText,
@@ -43,8 +32,6 @@ const characterSchema = z.object({
   short_description: requiredText,
   biography: z.string().trim(),
   curiosities: z.string(),
-  group_name: nullableText,
-  story_slug: nullableText,
   image_path: nullableText,
   accent: themeColor,
   sort_order: z.coerce.number().int().min(0),
@@ -56,13 +43,9 @@ const powerSchema = z.object({
 });
 const chapterSchema = z.object({
   id: nullableText,
-  story_id: z.string().uuid(),
+  story_id: databaseIdSchema,
   title: requiredText,
-  slug: z
-    .string()
-    .trim()
-    .min(1)
-    .regex(/^[a-z0-9-]+$/),
+  slug: slugSchema,
   chapter_number: z.coerce.number().int().min(1),
   status: z.enum(["draft", "published"]),
   content: z.string().transform((value, context) => {
@@ -81,9 +64,8 @@ function values(formData: FormData) {
 
 function revalidateStoryPages() {
   revalidatePath("/");
-  revalidatePath("/historias");
-  revalidatePath("/historias/[slug]", "page");
-  revalidatePath("/historias/[slug]/[chapterSlug]", "page");
+  revalidatePath("/capitulos");
+  revalidatePath("/capitulos/[slug]", "page");
 }
 
 function revalidateCharacterPages() {
@@ -107,6 +89,14 @@ async function requireAdmin() {
   const auth = await getAuthenticatedAdmin();
   if (!auth.client || !auth.user) redirect("/admin/login");
   return auth.client;
+}
+
+async function redirectWithSuccess(
+  path: string,
+  code: AdminSuccessCode,
+): Promise<never> {
+  await setAdminSuccess(code);
+  redirect(path);
 }
 
 export async function signIn(formData: FormData) {
@@ -138,44 +128,14 @@ export async function signOut() {
   redirect("/admin/login");
 }
 
-export async function saveStory(formData: FormData) {
-  const client = await requireAdmin();
-  const parsed = storySchema.safeParse(values(formData));
-  if (!parsed.success) redirect("/admin/historias/nova?erro=campos");
-  const { id, ...story } = parsed.data;
-  const payload = {
-    ...story,
-    featured: formData.get("featured") === "on",
-    published_at:
-      story.status === "published" ? new Date().toISOString() : null,
-  };
-  const result = id
-    ? await client.from("stories").update(payload).eq("id", id)
-    : await client.from("stories").insert(payload);
-  if (result.error)
-    redirect(
-      `/admin/historias?erro=${encodeURIComponent(result.error.message)}`,
-    );
-  revalidateStoryPages();
-  redirect("/admin/historias?sucesso=historia-salva");
-}
-export async function deleteStory(formData: FormData) {
-  const client = await requireAdmin();
-  const id = z.string().uuid().parse(formData.get("id"));
-  const { error } = await client.from("stories").delete().eq("id", id);
-  if (error)
-    redirect(`/admin/historias?erro=${encodeURIComponent(error.message)}`);
-  revalidateStoryPages();
-  redirect("/admin/historias?sucesso=historia-excluida");
-}
-
 export async function saveChapter(formData: FormData) {
   const client = await requireAdmin();
+  const currentSlug = slugSchema.safeParse(formData.get("current_slug"));
+  const formPath = currentSlug.success
+    ? `/admin/capitulos/${currentSlug.data}`
+    : "/admin/capitulos/novo";
   const parsed = chapterSchema.safeParse(values(formData));
-  if (!parsed.success)
-    redirect(
-      `/admin/historias/${formData.get("story_id")}/capitulos/novo?erro=campos`,
-    );
+  if (!parsed.success) redirect(`${formPath}?erro=campos`);
   const { id, ...chapter } = parsed.data;
   const payload = {
     ...chapter,
@@ -186,28 +146,24 @@ export async function saveChapter(formData: FormData) {
     ? await client.from("chapters").update(payload).eq("id", id)
     : await client.from("chapters").insert(payload);
   if (result.error)
-    redirect(
-      `/admin/historias/${chapter.story_id}?erro=${encodeURIComponent(result.error.message)}`,
-    );
+    redirect(`${formPath}?erro=${encodeURIComponent(result.error.message)}`);
   revalidateStoryPages();
-  redirect(`/admin/historias/${chapter.story_id}?sucesso=capitulo-salvo`);
+  return redirectWithSuccess("/admin/capitulos", "chapter-saved");
 }
 export async function deleteChapter(formData: FormData) {
   const client = await requireAdmin();
-  const id = z.string().uuid().parse(formData.get("id"));
-  const storyId = z.string().uuid().parse(formData.get("story_id"));
+  const id = databaseIdSchema.parse(formData.get("id"));
+  databaseIdSchema.parse(formData.get("story_id"));
   const { error } = await client.from("chapters").delete().eq("id", id);
   if (error)
-    redirect(
-      `/admin/historias/${storyId}?erro=${encodeURIComponent(error.message)}`,
-    );
+    redirect(`/admin/capitulos?erro=${encodeURIComponent(error.message)}`);
   revalidateStoryPages();
-  redirect(`/admin/historias/${storyId}?sucesso=capitulo-excluido`);
+  return redirectWithSuccess("/admin/capitulos", "chapter-deleted");
 }
 export async function moveChapter(formData: FormData) {
   const client = await requireAdmin();
-  const id = z.string().uuid().parse(formData.get("id"));
-  const storyId = z.string().uuid().parse(formData.get("story_id"));
+  const id = databaseIdSchema.parse(formData.get("id"));
+  databaseIdSchema.parse(formData.get("story_id"));
   const chapterNumber = z.coerce
     .number()
     .int()
@@ -218,19 +174,17 @@ export async function moveChapter(formData: FormData) {
     new_chapter_number: chapterNumber,
   });
   if (error)
-    redirect(
-      `/admin/historias/${storyId}?erro=${encodeURIComponent(error.message)}`,
-    );
+    redirect(`/admin/capitulos?erro=${encodeURIComponent(error.message)}`);
   revalidateStoryPages();
-  revalidatePath(`/admin/historias/${storyId}`);
-  redirect(`/admin/historias/${storyId}?sucesso=ordem-atualizada`);
+  revalidatePath("/admin/capitulos");
+  return redirectWithSuccess("/admin/capitulos", "chapter-reordered");
 }
 
 export async function saveCharacter(formData: FormData) {
   const client = await requireAdmin();
   const parsed = characterSchema.safeParse(values(formData));
   const parsedPowerIds = z
-    .array(databaseId)
+    .array(databaseIdSchema)
     .max(50)
     .safeParse(formData.getAll("power_ids"));
   if (!parsed.success || !parsedPowerIds.success)
@@ -286,7 +240,7 @@ export async function saveCharacter(formData: FormData) {
     }
   }
   revalidateCharacterPages();
-  redirect("/admin/personagens?sucesso=personagem-salvo");
+  return redirectWithSuccess("/admin/personagens", "character-saved");
 }
 
 export async function createPower(formData: FormData) {
@@ -312,16 +266,25 @@ export async function createPower(formData: FormData) {
     redirect(`/admin/poderes?erro=${encodeURIComponent(error.message)}`);
 
   revalidatePowerPages();
-  redirect("/admin/poderes?sucesso=poder-criado");
+  return redirectWithSuccess("/admin/poderes", "power-created");
+}
+export async function deletePower(formData: FormData) {
+  const client = await requireAdmin();
+  const id = databaseIdSchema.parse(formData.get("id"));
+  const { error } = await client.from("powers").delete().eq("id", id);
+  if (error)
+    redirect(`/admin/poderes?erro=${encodeURIComponent(error.message)}`);
+  revalidatePowerPages();
+  return redirectWithSuccess("/admin/poderes", "power-deleted");
 }
 export async function deleteCharacter(formData: FormData) {
   const client = await requireAdmin();
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = databaseIdSchema.parse(formData.get("id"));
   const { error } = await client.from("characters").delete().eq("id", id);
   if (error)
     redirect(`/admin/personagens?erro=${encodeURIComponent(error.message)}`);
   revalidateCharacterPages();
-  redirect("/admin/personagens?sucesso=personagem-excluido");
+  return redirectWithSuccess("/admin/personagens", "character-deleted");
 }
 
 export async function saveGalleryItem(formData: FormData) {
@@ -346,16 +309,16 @@ export async function saveGalleryItem(formData: FormData) {
   if (result.error)
     redirect(`/admin/galeria?erro=${encodeURIComponent(result.error.message)}`);
   revalidateGalleryPages();
-  redirect("/admin/galeria?sucesso=imagem-salva");
+  return redirectWithSuccess("/admin/galeria", "gallery-item-saved");
 }
 export async function deleteGalleryItem(formData: FormData) {
   const client = await requireAdmin();
-  const id = z.string().uuid().parse(formData.get("id"));
+  const id = databaseIdSchema.parse(formData.get("id"));
   const path = z.string().parse(formData.get("image_path"));
   const { error } = await client.from("gallery_items").delete().eq("id", id);
   if (error)
     redirect(`/admin/galeria?erro=${encodeURIComponent(error.message)}`);
   if (path) await client.storage.from("media").remove([path]);
   revalidateGalleryPages();
-  redirect("/admin/galeria?sucesso=imagem-excluida");
+  return redirectWithSuccess("/admin/galeria", "gallery-item-deleted");
 }

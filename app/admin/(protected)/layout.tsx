@@ -10,7 +10,9 @@ import {
   Users,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { Notice } from "@/components/admin/notice";
 import { signOut } from "@/app/admin/actions";
+import { getAdminSuccess } from "@/lib/admin-flash";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +39,7 @@ export default async function AdminLayout({
       </main>
     );
   if (!user) redirect("/admin/login");
+  const success = await getAdminSuccess();
   return (
     <div className="admin-shell">
       <aside className="admin-sidebar">
@@ -49,8 +52,8 @@ export default async function AdminLayout({
           <Link href="/admin">
             <LayoutDashboard /> Visão geral
           </Link>
-          <Link href="/admin/historias">
-            <BookOpen /> A história
+          <Link href="/admin/capitulos">
+            <BookOpen /> Capítulos
           </Link>
           <Link href="/admin/personagens">
             <Users /> Personagens
@@ -73,7 +76,10 @@ export default async function AdminLayout({
           </form>
         </div>
       </aside>
-      <div className="admin-main">{children}</div>
+      <div className="admin-main">
+        <Notice success={success?.message} noticeId={success?.id} />
+        {children}
+      </div>
     </div>
   );
 }

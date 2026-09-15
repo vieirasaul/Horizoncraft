@@ -98,21 +98,16 @@ export default async function CharacterPage({ params }: PageProps) {
         >
           {character.biography && (
             <article className="bio-panel">
-              <p className="section-kicker">História do personagem</p>
               <h2>Biografia</h2>
               <p>{character.biography}</p>
               {character.storySlug && (
-                <Link
-                  className="text-link"
-                  href={`/historias/${character.storySlug}`}
-                >
-                  <BookOpen size={17} /> Ver história relacionada
+                <Link className="text-link" href="/capitulos">
+                  <BookOpen size={17} /> Ver capítulos
                 </Link>
               )}
             </article>
           )}
           <div className="power-panel">
-            <p className="section-kicker">Habilidades conhecidas</p>
             <h2>Poderes</h2>
             <div className="power-detail-grid">
               {character.powers.map((power, index) => (

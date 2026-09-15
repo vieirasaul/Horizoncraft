@@ -1,11 +1,12 @@
 import { Sparkles } from "lucide-react";
-import { createPower } from "@/app/admin/actions";
+import { createPower, deletePower } from "@/app/admin/actions";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
+import { PowerDeleteButton } from "@/components/admin/power-delete-button";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
 
-type PageProps = { searchParams: Promise<{ sucesso?: string; erro?: string }> };
+type PageProps = { searchParams: Promise<{ erro?: string }> };
 
 export default async function AdminPowersPage({ searchParams }: PageProps) {
   const { client } = await getAuthenticatedAdmin();
@@ -23,7 +24,7 @@ export default async function AdminPowersPage({ searchParams }: PageProps) {
         description="Cadastre as habilidades uma vez e use-as em vários personagens."
       />
       <section className="admin-content powers-admin-content">
-        <Notice success={query.sucesso} error={query.erro ?? error?.message} />
+        <Notice error={query.erro ?? error?.message} />
 
         <form action={createPower} className="admin-form power-create-form">
           <div className="power-form-heading">
@@ -73,10 +74,19 @@ export default async function AdminPowersPage({ searchParams }: PageProps) {
                       <h3>{power.name}</h3>
                       <p>{power.description}</p>
                     </div>
-                    <span>
-                      {characterCount}{" "}
-                      {characterCount === 1 ? "personagem" : "personagens"}
-                    </span>
+                    <div className="power-admin-meta">
+                      <span>
+                        {characterCount}{" "}
+                        {characterCount === 1 ? "personagem" : "personagens"}
+                      </span>
+                      <form action={deletePower}>
+                        <input type="hidden" name="id" value={power.id} />
+                        <PowerDeleteButton
+                          powerName={power.name}
+                          characterCount={characterCount}
+                        />
+                      </form>
+                    </div>
                   </article>
                 );
               })}

@@ -29,9 +29,7 @@ export default async function LoginPage({ searchParams }: PageProps) {
           <BrandMark />
           <span>Horizoncraft</span>
         </div>
-        <p className="section-kicker">Área privada</p>
         <h1>Entrar no Horizoncraft</h1>
-        <p>Acesso exclusivo para Théo e seu responsável.</p>
         {error && (
           <div className="admin-notice notice-error" role="alert">
             {error}
@@ -54,10 +52,6 @@ export default async function LoginPage({ searchParams }: PageProps) {
           </label>
           <SubmitButton pendingLabel="Entrando…">Entrar</SubmitButton>
         </form>
-        <small>
-          Não existe cadastro público. O acesso é somente para a conta
-          administradora.
-        </small>
         <Link className="back-link login-back-link" href="/">
           <ArrowLeft size={17} /> Voltar ao site
         </Link>

@@ -1,14 +1,17 @@
-import { SPECIAL_MESSAGE_STORY_ID } from "@/lib/content-identity";
+import {
+  HORIZONCRAFT_STORY_ID,
+  SPECIAL_MESSAGE_CHAPTER_ID,
+} from "@/lib/content-identity";
 import type { Character, GalleryItem, Story } from "@/lib/types";
 
 export const demoStories: Story[] = [
   {
-    id: SPECIAL_MESSAGE_STORY_ID,
-    slug: "parabens-theo",
-    title: "Parabéns, Théo!",
-    synopsis: "O Horizoncraft agora tem um lugar só dele.",
-    category: "Mensagem especial",
-    progress: "complete",
+    id: HORIZONCRAFT_STORY_ID,
+    slug: "horizoncraft",
+    title: "Horizoncraft",
+    synopsis: "Uma história de heróis, poderes e aventuras criada por Théo.",
+    category: "Aventura",
+    progress: "ongoing",
     status: "published",
     featured: true,
     coverUrl: null,
@@ -16,9 +19,9 @@ export const demoStories: Story[] = [
     publishedAt: null,
     chapters: [
       {
-        id: "chapter-birthday",
-        slug: "bem-vindo-ao-seu-universo",
-        title: "Uma aventura muito especial começa hoje",
+        id: SPECIAL_MESSAGE_CHAPTER_ID,
+        slug: "parabens-theo",
+        title: "Parabéns, Théo!",
         chapterNumber: 1,
         status: "published",
         publishedAt: null,

@@ -14,8 +14,6 @@ type CharacterValue = {
   short_description?: string;
   biography?: string;
   curiosities?: string[];
-  group_name?: string | null;
-  story_slug?: string | null;
   image_path?: string | null;
   accent?: string;
   sort_order?: number;
@@ -130,20 +128,6 @@ export function CharacterForm({
         />
         Mostrar este personagem em destaque na página inicial
       </label>
-      <div className="form-grid">
-        <label>
-          Grupo relacionado
-          <input name="group_name" defaultValue={character.group_name ?? ""} />
-        </label>
-        <label>
-          Endereço da história relacionada
-          <input
-            name="story_slug"
-            defaultValue={character.story_slug ?? ""}
-            placeholder="a-grande-aventura"
-          />
-        </label>
-      </div>
       <label>Desenho do personagem</label>
       <ImageUploadField name="image_path" initialPath={character.image_path} />
       <div className="form-actions">

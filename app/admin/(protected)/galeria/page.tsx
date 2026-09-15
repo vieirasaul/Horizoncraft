@@ -5,7 +5,7 @@ import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
-type PageProps = { searchParams: Promise<{ sucesso?: string; erro?: string }> };
+type PageProps = { searchParams: Promise<{ erro?: string }> };
 export default async function AdminGalleryPage({ searchParams }: PageProps) {
   const { client } = await getAuthenticatedAdmin();
   if (!client) return null;
@@ -23,7 +23,7 @@ export default async function AdminGalleryPage({ searchParams }: PageProps) {
         actionLabel="Novo desenho"
       />
       <section className="admin-content">
-        <Notice success={query.sucesso} error={query.erro} />
+        <Notice error={query.erro} />
         {items?.length ? (
           <div className="admin-list">
             {items.map((item) => (
