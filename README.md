@@ -1,19 +1,64 @@
 # Horizoncraft
 
-Horizoncraft é uma história e um universo fictício criados por Théo. Este site foi feito para apresentar seus capítulos, personagens, poderes e desenhos, enquanto a área administrativa privada permite que Théo e seu responsável desenvolvam esse conteúdo ao longo do tempo.
+Horizoncraft is a full-stack storytelling platform built around a fictional universe created by my stepson. I designed and developed the project to turn his characters, powers, chapters, and drawings into an interactive digital experience.
 
-## Tecnologias
+The application combines a playful, comic-inspired public website with a secure content management system. It is also a portfolio project that demonstrates product thinking, UI design, responsive development, backend integration, authentication, data modeling, security, performance optimization, and deployment.
 
-- Next.js 16 com App Router e TypeScript
-- React 19 e Tailwind CSS 4
-- Supabase Auth, Postgres e Storage
-- Zod para validação
-- Vitest para testes essenciais
-- ESLint para qualidade de código
+The current product presents Horizoncraft as one continuous story composed of multiple chapters, with characters, powers, and artwork connected to the same universe.
 
-## Executar localmente
+## What the application includes
 
-Requisitos: Node.js 22 ou versão LTS compatível e npm.
+### Public experience
+
+- Responsive landing page with animated hero content
+- Chapter directory and block-based chapter reader
+- Character directory with individual profile pages
+- Reusable power catalog connected to characters
+- Drawing gallery with image previews and lightbox navigation
+- Friendly URLs, metadata, loading states, error pages, and empty states
+- Mobile navigation for both the public website and admin panel
+
+### Content management
+
+- Private administrator login with no public registration flow
+- Create, edit, reorder, publish, and delete chapters
+- Create and manage characters and their powers
+- Reusable power creation with duplicate-name validation
+- Drawing uploads with client-side preview and automatic WebP conversion
+- Draft and published states for controlled content visibility
+- Responsive admin interface with feedback, confirmation dialogs, and loading states
+
+## Engineering highlights
+
+- Full-stack architecture with Next.js App Router and React Server Components
+- Server Actions with Zod validation for administrative operations
+- PostgreSQL relational model for stories, chapters, characters, powers, and artwork
+- Row Level Security policies protecting drafts and administrative operations
+- Private Supabase Storage bucket with access based on published content
+- Cached public queries with immediate tag invalidation after admin changes
+- Batched signed Storage URLs to reduce network round trips
+- Responsive image sizing, LCP prioritization, long-lived image caching, and font subsetting
+- Local demo data when Supabase environment variables are not configured
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org/) with App Router
+- [React 19](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS 4](https://tailwindcss.com/) and custom CSS
+- [Supabase](https://supabase.com/) for PostgreSQL, Auth, and Storage
+- [Zod](https://zod.dev/) for runtime validation
+- [Vitest](https://vitest.dev/) for automated tests
+- [Vercel](https://vercel.com/) for deployment
+
+## Getting started
+
+Requirements:
+
+- Node.js 22 or a compatible active LTS release
+- npm
+
+Install the dependencies and create the local environment file:
 
 ```bash
 npm install
@@ -21,113 +66,106 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Abra `http://localhost:3000`. Sem valores no `.env.local`, o site público usa dados fictícios locais e `/admin` exibe as instruções de configuração.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Configurar um projeto gratuito no Supabase
+Without Supabase credentials, the public website uses local demo data. The admin area requires a configured Supabase project.
 
-1. Crie uma conta em [supabase.com](https://supabase.com) e um projeto no plano gratuito.
-2. No painel do projeto, abra **SQL Editor**.
-3. Copie e execute todo o arquivo `supabase/migrations/202609020001_initial_schema.sql`.
-4. Em seguida, execute `supabase/migrations/202609020002_identity_and_content_refresh.sql` e `supabase/migrations/202609020003_featured_characters.sql`, nessa ordem. Elas instalam a mensagem “Parabéns, Théo!”, os primeiros quatro personagens confirmados e o marcador de destaque. A galeria permanece vazia até receber um desenho real.
-5. Em **Project Settings → API**, copie a URL do projeto e a chave pública/anônima.
-6. Preencha o `.env.local` conforme o exemplo abaixo.
+## Environment variables
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-publica
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-public-anon-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-Nunca adicione a chave `service_role` ao projeto ou ao navegador. Ela não é necessária para o Horizoncraft.
+Only the public Supabase URL and anonymous key are required. A `service_role` key must never be exposed through a `NEXT_PUBLIC_` variable or committed to the repository.
 
-## Criar a conta administradora
+## Supabase setup
 
-O site não oferece cadastro público.
+Create a Supabase project, authenticate the CLI, link the repository, and apply the committed migrations:
 
-1. No Supabase, abra **Authentication → Users → Add user**.
-2. Crie o único usuário administrador com um e-mail controlado pelo responsável e uma senha forte.
-3. Copie o UUID do usuário.
-4. No SQL Editor, execute o comando abaixo, substituindo o UUID:
+```bash
+npx supabase login
+npx supabase link --project-ref your-project-ref
+npx supabase db push
+```
+
+The migrations create:
+
+- the relational content model and supporting indexes;
+- Row Level Security policies;
+- helper functions and update triggers;
+- the private `media` Storage bucket;
+- initial content used by the project.
+
+### Create an administrator
+
+Public account creation is intentionally unavailable.
+
+1. In Supabase, open **Authentication → Users** and create a user.
+2. Copy the generated user UUID.
+3. Run the following statement in the SQL Editor:
 
 ```sql
 update public.profiles
-set is_admin = true, display_name = 'Nome artístico'
-where id = 'UUID-DO-USUARIO';
+set is_admin = true,
+    display_name = 'Admin'
+where id = 'USER_UUID';
 ```
 
-Use apenas apelido ou nome artístico em `display_name`. Depois, acesse `http://localhost:3000/admin/login`.
+The administrator can then sign in at `/admin/login`.
 
-## Editar a mensagem de aniversário
+## Data and security model
 
-Depois de entrar no painel, abra **A história → Parabéns, Théo! → Uma aventura muito especial começa hoje**. O texto está separado em blocos e pode ser revisado antes da publicação. No modo sem Supabase, a versão local fica em `lib/demo-data.ts`, identificada por um comentário em inglês.
+The main tables are:
 
-## Armazenamento de imagens
+- `profiles`
+- `stories`
+- `chapters`
+- `characters`
+- `powers`
+- `character_powers`
+- `gallery_items`
 
-A migração cria automaticamente o bucket privado `media` com:
+All exposed tables use Row Level Security. Anonymous visitors can only read published content, while administrative writes require an authenticated user whose profile is marked as an administrator.
 
-- JPEG, PNG e WebP permitidos;
-- limite de 3 MB por arquivo;
-- envio, substituição e exclusão restritos ao administrador;
-- leitura anônima somente quando o arquivo estiver ligado a uma história, capítulo, personagem ou item da galeria publicado.
+Chapter content is stored as a validated list of JSON blocks, including paragraphs, headings, quotes, lists, and images. The reader maps these blocks to React components instead of executing user-provided HTML.
 
-O painel valida o arquivo antes do envio, mostra uma prévia, cria um nome aleatório e converte imagens para WebP com largura ou altura máxima de 1.800 px quando possível.
+Images are uploaded to a private Storage bucket. The admin interface validates file type and size, resizes large images, converts them to WebP, and generates unique file paths. Public access is limited to media connected to published content.
 
-## Modelo de conteúdo
-
-As tabelas principais são `profiles`, `stories`, `chapters`, `characters`, `powers`, `character_powers` e `gallery_items`. Todas usam Row Level Security. Rascunhos ficam privados; somente registros publicados são legíveis pelo público.
-
-Capítulos são armazenados como uma lista JSON de blocos permitidos: parágrafo, título intermediário, citação, lista e imagem. O leitor transforma esses blocos diretamente em componentes React. HTML fornecido pelo usuário não é executado.
-
-## Verificações
+## Available scripts
 
 ```bash
-npm run lint
-npm run typecheck
-npm test
-npm run build
+npm run dev          # Start the development server
+npm run build        # Create a production build
+npm run start        # Run the production server
+npm run lint         # Run ESLint
+npm run typecheck    # Validate TypeScript types
+npm test             # Run the test suite
+npm run format:check # Check formatting
 ```
 
-## Publicação futura na Vercel
+## Project structure
 
-Quando chegar a hora de publicar:
+```text
+app/                  Public pages, chapter reader, and admin routes
+components/           Shared public and administrative components
+lib/                  Data access, validation, types, and Supabase clients
+supabase/migrations/  Database schema, policies, and incremental changes
+tests/                Automated tests
+```
 
-1. Crie um repositório **privado** no GitHub.
-2. Revise `git status` e confirme que `.env.local` não será enviado.
-3. Adicione o repositório remoto e envie a branch principal.
-4. Importe o repositório na Vercel.
-5. Cadastre as três variáveis de ambiente do `.env.example` nas configurações da Vercel.
-6. Defina `NEXT_PUBLIC_SITE_URL` com o domínio final e faça uma nova implantação.
+## Deployment
 
-Essas ações não são executadas automaticamente por este projeto.
+The application is prepared for deployment on Vercel:
 
-## Backup manual
+1. Import the GitHub repository into Vercel.
+2. Add the three public environment variables.
+3. Set `NEXT_PUBLIC_SITE_URL` to the production domain.
+4. Deploy the application.
 
-Para um backup simples das histórias:
+Local development and Vercel can use the same Supabase project. Changes made through either application will update the same database and Storage bucket.
 
-1. No Supabase, abra **Table Editor**.
-2. Exporte `stories`, `chapters`, `characters`, `powers`, `character_powers` e `gallery_items` em CSV.
-3. No Storage, abra o bucket `media` e baixe os arquivos para uma pasta local.
-4. Guarde os CSVs e a pasta de imagens juntos, com a data do backup no nome.
+## Project status
 
-Para restaurar, importe primeiro as histórias, depois capítulos, personagens, poderes, relações e galeria. Envie as imagens mantendo os caminhos registrados nos campos `cover_path`, `image_path` e nos blocos de capítulos.
-
-## Segurança e privacidade
-
-- Não há comentários, mensagens privadas, cadastro de leitores, analytics ou uploads públicos.
-- Não publique nome completo, idade, escola, endereço, localização, telefone, e-mail ou redes sociais do autor.
-- Todo conteúdo novo começa como rascunho.
-- A conta administrativa deve ser compartilhada apenas com o responsável.
-- Faça backups periódicos e use uma senha longa e exclusiva.
-
-## Estrutura principal
-
-- `app/`: páginas públicas, leitor e painel administrativo
-- `components/`: componentes reutilizáveis públicos e administrativos
-- `lib/`: tipos, dados de demonstração e integração com Supabase
-- `supabase/migrations/`: esquema, índices e políticas de segurança
-- `supabase/seed.sql`: arquivo vazio por segurança; o conteúdo inicial confirmado está nas migrações
-- `tests/`: testes essenciais
-
-## Limites da primeira versão
-
-Não fazem parte desta versão: colaboração em tempo real, histórico avançado de versões, comentários, mensagens, cadastro de leitores, analytics, editor visual de páginas de quadrinhos e edição automática de imagens. Essas funcionalidades devem ser avaliadas apenas se houver uma necessidade clara e segura no futuro.
+Horizoncraft is an actively developed personal project. The current version provides a complete public content experience and a focused private CMS, while leaving room for future chapters, characters, artwork, and carefully scoped editorial features.
