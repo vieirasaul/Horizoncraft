@@ -193,7 +193,6 @@ export async function saveCharacter(formData: FormData) {
   const powerIds = [...new Set(parsedPowerIds.data)];
   const payload = {
     ...fields,
-    featured: formData.get("featured") === "on",
     curiosities: curiosities
       .split("\n")
       .map((item) => item.trim())

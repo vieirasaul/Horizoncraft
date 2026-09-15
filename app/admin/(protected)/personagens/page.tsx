@@ -11,7 +11,7 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
   if (!client) return null;
   const { data: characters } = await client!
     .from("characters")
-    .select("id,name,slug,role,status,sort_order,featured,updated_at")
+    .select("id,name,slug,role,status,sort_order,updated_at")
     .order("sort_order", { ascending: true })
     .order("updated_at", { ascending: false });
   const query = await searchParams;
@@ -42,7 +42,6 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
                         ? "Vilão"
                         : "Outro"}{" "}
                     · /{character.slug}
-                    {character.featured ? " · Destaque na página inicial" : ""}
                   </p>
                 </div>
                 <Link

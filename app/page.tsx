@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   Anvil,
@@ -46,11 +47,7 @@ export default async function HomePage() {
   const storyHref = firstChapter
     ? `/capitulos/${firstChapter.chapter.slug}`
     : "/capitulos";
-  const selectedCharacters = (
-    characters.some((character) => character.featured)
-      ? characters.filter((character) => character.featured)
-      : characters
-  ).slice(0, 6);
+  const selectedCharacters = characters.slice(0, 4);
   const highlightedPowers = selectedCharacters
     .flatMap((character) => {
       const power = character.powers[0];
@@ -274,8 +271,27 @@ export default async function HomePage() {
           />
           {galleryItems.length ? (
             <div className="mini-gallery">
-              {galleryItems.slice(0, 3).map((item) => (
-                <span key={item.id}>{item.title}</span>
+              {galleryItems.slice(0, 4).map((item) => (
+                <Link
+                  className={`mini-gallery-card accent-${item.accent}`}
+                  href="/galeria"
+                  aria-label={`Ver ${item.title} na galeria`}
+                  key={item.id}
+                >
+                  <span className="mini-gallery-image">
+                    {item.imageUrl ? (
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 580px) 100vw, (max-width: 820px) 50vw, 25vw"
+                      />
+                    ) : (
+                      <span>{item.title}</span>
+                    )}
+                  </span>
+                  <strong>{item.title}</strong>
+                </Link>
               ))}
             </div>
           ) : (

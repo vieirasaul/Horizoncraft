@@ -17,7 +17,6 @@ type CharacterValue = {
   image_path?: string | null;
   accent?: string;
   sort_order?: number;
-  featured?: boolean;
   status?: string;
   powers?: PowerOption[];
 };
@@ -119,14 +118,6 @@ export function CharacterForm({
           rows={5}
           placeholder="Uma curiosidade por linha"
         />
-      </label>
-      <label className="checkbox-label">
-        <input
-          type="checkbox"
-          name="featured"
-          defaultChecked={character.featured}
-        />
-        Mostrar este personagem em destaque na página inicial
       </label>
       <label>Desenho do personagem</label>
       <ImageUploadField name="image_path" initialPath={character.image_path} />
