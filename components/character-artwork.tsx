@@ -9,6 +9,7 @@ export function CharacterArtwork({
   accent,
   imageUrl,
   sizes = "(max-width: 700px) 100vw, 33vw",
+  loading,
 }: {
   id: string;
   name: string;
@@ -16,6 +17,7 @@ export function CharacterArtwork({
   accent: ThemeColor;
   imageUrl?: string | null;
   sizes?: string;
+  loading?: "eager" | "lazy";
 }) {
   const visualKey = getCharacterVisualKey(id, slug);
 
@@ -28,7 +30,13 @@ export function CharacterArtwork({
       }
     >
       {imageUrl ? (
-        <Image src={imageUrl} alt={`Desenho de ${name}`} fill sizes={sizes} />
+        <Image
+          src={imageUrl}
+          alt={`Desenho de ${name}`}
+          fill
+          sizes={sizes}
+          loading={loading}
+        />
       ) : (
         <>
           <span className="art-aura" />

@@ -65,7 +65,8 @@ export default async function CharacterPage({ params }: PageProps) {
                   slug={character.slug}
                   accent={character.accent}
                   imageUrl={character.imageUrl}
-                  sizes="(max-width: 700px) 100vw, 50vw"
+                  sizes="(max-width: 820px) calc(100vw - 64px), 440px"
+                  loading="eager"
                 />
               </div>
               <div className="character-title">

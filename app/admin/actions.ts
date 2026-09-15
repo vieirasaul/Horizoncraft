@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { setAdminSuccess, type AdminSuccessCode } from "@/lib/admin-flash";
@@ -63,13 +63,16 @@ function values(formData: FormData) {
 }
 
 function revalidateStoryPages() {
+  updateTag("stories");
   revalidatePath("/");
   revalidatePath("/capitulos");
   revalidatePath("/capitulos/[slug]", "page");
 }
 
 function revalidateCharacterPages() {
+  updateTag("characters");
   revalidatePath("/");
+  revalidatePath("/galeria");
   revalidatePath("/personagens");
   revalidatePath("/personagens/[slug]", "page");
   revalidatePath("/poderes");
@@ -81,6 +84,7 @@ function revalidatePowerPages() {
 }
 
 function revalidateGalleryPages() {
+  updateTag("gallery");
   revalidatePath("/");
   revalidatePath("/galeria");
 }
@@ -296,7 +300,6 @@ export async function saveGalleryItem(formData: FormData) {
       image_path: requiredText,
       related_label: nullableText,
       related_type: z.enum(["story", "character"]).nullable().catch(null),
-      accent: themeColor,
       status: z.enum(["draft", "published"]),
     })
     .safeParse(values(formData));

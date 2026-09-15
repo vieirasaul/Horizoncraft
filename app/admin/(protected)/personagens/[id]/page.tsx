@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { CharacterForm } from "@/components/admin/character-form";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 type PageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ erro?: string }>;
@@ -11,7 +11,7 @@ export default async function EditCharacterPage({
   params,
   searchParams,
 }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
   const identifier = (await params).id;
   const identifierColumn =

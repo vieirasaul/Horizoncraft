@@ -4,12 +4,12 @@ import { deleteGalleryItem } from "@/app/admin/actions";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 export default async function AdminGalleryPage({ searchParams }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
-  const { data: items } = await client!
+  const { data: items } = await client
     .from("gallery_items")
     .select("id,title,image_path,status,updated_at")
     .order("updated_at", { ascending: false });

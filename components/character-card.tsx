@@ -29,6 +29,7 @@ export function CharacterCard({ character }: { character: Character }) {
         slug={character.slug}
         accent={character.accent}
         imageUrl={character.imageUrl}
+        sizes="(max-width: 580px) min(380px, calc(100vw - 32px)), (max-width: 1100px) calc(50vw - 36px), 277px"
       />
       <div className="collectible-copy">
         <h3>{character.name}</h3>

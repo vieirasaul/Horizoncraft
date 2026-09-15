@@ -2,12 +2,12 @@ import { redirect } from "next/navigation";
 import { ChapterForm } from "@/components/admin/chapter-form";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 
 export default async function NewChapterPage({ searchParams }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
   const { data: stories } = await client
     .from("stories")

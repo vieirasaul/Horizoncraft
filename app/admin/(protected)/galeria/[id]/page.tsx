@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { GalleryForm } from "@/components/admin/gallery-form";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 type PageProps = {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ erro?: string }>;
@@ -11,11 +11,11 @@ export default async function EditGalleryItemPage({
   params,
   searchParams,
 }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
-  const { data: item } = await client!
+  const { data: item } = await client
     .from("gallery_items")
-    .select("*")
+    .select("id,title,caption,image_path,related_label,related_type,status")
     .eq("id", (await params).id)
     .single();
   if (!item) notFound();

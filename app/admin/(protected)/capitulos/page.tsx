@@ -4,16 +4,18 @@ import { deleteChapter, moveChapter } from "@/app/admin/actions";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 
 export default async function AdminChaptersPage({ searchParams }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
   const { data: stories, error: loadError } = await client
     .from("stories")
-    .select("id,title,slug,featured,created_at,chapters(*)")
+    .select(
+      "id,title,slug,featured,created_at,chapters(id,slug,title,chapter_number,status)",
+    )
     .order("featured", { ascending: false })
     .order("created_at", { ascending: true })
     .limit(1);

@@ -284,7 +284,7 @@ export default async function HomePage() {
                         src={item.imageUrl}
                         alt={item.title}
                         fill
-                        sizes="(max-width: 580px) 100vw, (max-width: 820px) 50vw, 25vw"
+                        sizes="(max-width: 580px) calc(100vw - 32px), (max-width: 820px) calc(50vw - 26px), 280px"
                       />
                     ) : (
                       <span>{item.title}</span>

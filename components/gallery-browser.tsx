@@ -19,7 +19,7 @@ function GalleryArtwork({ item }: { item: GalleryItem }) {
           src={item.imageUrl}
           alt={item.title}
           fill
-          sizes="(max-width: 700px) 100vw, 50vw"
+          sizes="(max-width: 580px) calc(100vw - 32px), (max-width: 820px) calc(50vw - 24px), 377px"
         />
       ) : (
         <>

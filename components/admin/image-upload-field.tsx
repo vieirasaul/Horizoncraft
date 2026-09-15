@@ -95,6 +95,7 @@ export function ImageUploadField({
       const { error } = await client.storage
         .from("media")
         .upload(safePath, resized, {
+          cacheControl: "31536000",
           contentType: "image/webp",
           upsert: false,
         });

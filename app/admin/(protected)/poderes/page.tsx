@@ -4,12 +4,12 @@ import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
 import { PowerDeleteButton } from "@/components/admin/power-delete-button";
 import { SubmitButton } from "@/components/admin/submit-button";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 
 export default async function AdminPowersPage({ searchParams }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
   const { data: powers, error } = await client
     .from("powers")

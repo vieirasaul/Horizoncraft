@@ -1,5 +1,6 @@
 import "server-only";
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { demoCharacters, demoGallery, demoStories } from "@/lib/demo-data";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
@@ -28,6 +29,31 @@ type StoryRow = {
   }>;
 };
 
+type CharacterRow = {
+  id: string;
+  slug: string;
+  name: string;
+  role: Character["role"];
+  short_description: string;
+  biography: string;
+  weaknesses: string[] | null;
+  curiosities: string[] | null;
+  image_path: string | null;
+  accent: Character["accent"];
+  sort_order: number | null;
+  featured: boolean | null;
+  story_slug: string | null;
+  group_name: string | null;
+  status: Character["status"];
+  character_powers: Array<{
+    sort_order: number;
+    powers: { id: string; name: string; description: string };
+  }>;
+};
+
+const DATA_CACHE_SECONDS = 60 * 60;
+const SIGNED_URL_SECONDS = 24 * 60 * 60;
+
 function mapStory(row: StoryRow): Story {
   return {
     id: row.id,
@@ -53,25 +79,57 @@ function mapStory(row: StoryRow): Story {
   };
 }
 
-async function signMediaPath(
+async function signMediaPaths(
   client: SupabaseClient,
-  path: string | null | undefined,
+  paths: Array<string | null | undefined>,
 ) {
-  if (!path) return null;
-  if (path.startsWith("https://")) return path;
+  const urls = new Map<string, string>();
+  const storagePaths = [
+    ...new Set(
+      paths.filter(
+        (path): path is string =>
+          Boolean(path) && !/^https?:\/\//.test(path as string),
+      ),
+    ),
+  ];
+
+  for (const path of paths) {
+    if (path && /^https?:\/\//.test(path)) urls.set(path, path);
+  }
+
+  if (!storagePaths.length) return urls;
+
   const { data, error } = await client.storage
     .from("media")
-    .createSignedUrl(path, 60 * 60);
-  return error ? null : data.signedUrl;
+    .createSignedUrls(storagePaths, SIGNED_URL_SECONDS);
+
+  if (error) {
+    console.error("Could not sign media URLs:", error.message);
+    return urls;
+  }
+
+  for (const item of data) {
+    if (item.path && item.signedUrl) urls.set(item.path, item.signedUrl);
+  }
+
+  return urls;
 }
 
-export async function getStories(): Promise<Story[]> {
-  noStore();
+function resolveMediaUrl(
+  urls: Map<string, string>,
+  path: string | null | undefined,
+) {
+  return path ? (urls.get(path) ?? null) : null;
+}
+
+async function loadStories(): Promise<Story[]> {
   const client = createPublicSupabaseClient();
   if (!client) return demoStories;
   const { data, error } = await client
     .from("stories")
-    .select("*, chapters(*)")
+    .select(
+      "id,slug,title,synopsis,category,progress,status,featured,cover_path,accent,published_at,chapters(id,slug,title,chapter_number,status,content,published_at)",
+    )
     .eq("status", "published")
     .order("published_at", { ascending: false })
     .order("chapter_number", { referencedTable: "chapters", ascending: true });
@@ -79,33 +137,47 @@ export async function getStories(): Promise<Story[]> {
     console.error("Could not load stories:", error.message);
     return [];
   }
-  return Promise.all(
-    (data as StoryRow[]).map(async (row) => {
-      const story = mapStory(row);
-      story.coverUrl = await signMediaPath(client, row.cover_path);
-      story.chapters = await Promise.all(
-        story.chapters.map(async (chapter) => ({
-          ...chapter,
-          content: await Promise.all(
-            chapter.content.map(async (block) =>
-              block.type === "image" && block.imageUrl
-                ? {
-                    ...block,
-                    imageUrl:
-                      (await signMediaPath(client, block.imageUrl)) ??
-                      undefined,
-                  }
-                : block,
-            ),
-          ),
-        })),
-      );
-      return story;
-    }),
-  );
+
+  const rows = data as StoryRow[];
+  const mediaUrls = await signMediaPaths(client, [
+    ...rows.map((row) => row.cover_path),
+    ...rows.flatMap((row) =>
+      (row.chapters ?? []).flatMap((chapter) =>
+        (chapter.content ?? [])
+          .filter((block) => block.type === "image")
+          .map((block) => block.imageUrl),
+      ),
+    ),
+  ]);
+
+  return rows.map((row) => {
+    const story = mapStory(row);
+    story.coverUrl = resolveMediaUrl(mediaUrls, row.cover_path);
+    story.chapters = story.chapters.map((chapter) => ({
+      ...chapter,
+      content: chapter.content.map((block) =>
+        block.type === "image" && block.imageUrl
+          ? {
+              ...block,
+              imageUrl: resolveMediaUrl(mediaUrls, block.imageUrl) ?? undefined,
+            }
+          : block,
+      ),
+    }));
+    return story;
+  });
 }
 
-export async function getChapter(slug: string) {
+const getCachedStories = unstable_cache(loadStories, ["published-stories"], {
+  revalidate: DATA_CACHE_SECONDS,
+  tags: ["stories"],
+});
+
+export const getStories = cache(async (): Promise<Story[]> =>
+  getCachedStories(),
+);
+
+export const getChapter = cache(async (slug: string) => {
   const stories = await getStories();
 
   for (const story of stories) {
@@ -117,15 +189,16 @@ export async function getChapter(slug: string) {
   }
 
   return null;
-}
+});
 
-export async function getCharacters(): Promise<Character[]> {
-  noStore();
+async function loadCharacters(): Promise<Character[]> {
   const client = createPublicSupabaseClient();
   if (!client) return demoCharacters;
   const { data, error } = await client
     .from("characters")
-    .select("*, character_powers(powers(*))")
+    .select(
+      "id,slug,name,role,short_description,biography,weaknesses,curiosities,image_path,accent,sort_order,featured,story_slug,group_name,status,character_powers(sort_order,powers(id,name,description))",
+    )
     .eq("status", "published")
     .order("sort_order", { ascending: true })
     .order("sort_order", {
@@ -137,47 +210,62 @@ export async function getCharacters(): Promise<Character[]> {
     console.error("Could not load characters:", error.message);
     return [];
   }
-  return (await Promise.all(
-    data.map(async (row) => ({
-      id: row.id,
-      slug: row.slug,
-      name: row.name,
-      role: row.role,
-      shortDescription: row.short_description,
-      biography: row.biography,
-      weaknesses: row.weaknesses ?? [],
-      curiosities: row.curiosities ?? [],
-      imageUrl: await signMediaPath(client, row.image_path),
-      accent: row.accent,
-      sortOrder: row.sort_order ?? 0,
-      featured: row.featured ?? false,
-      storySlug: row.story_slug,
-      groupName: row.group_name,
-      status: row.status,
-      powers: (row.character_powers ?? []).map(
-        (relation: {
-          powers: { id: string; name: string; description: string };
-        }) => relation.powers,
-      ),
-    })),
-  )) as Character[];
+
+  const rows = data as unknown as CharacterRow[];
+  const mediaUrls = await signMediaPaths(
+    client,
+    rows.map((row) => row.image_path),
+  );
+
+  return rows.map((row) => ({
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    role: row.role,
+    shortDescription: row.short_description,
+    biography: row.biography,
+    weaknesses: row.weaknesses ?? [],
+    curiosities: row.curiosities ?? [],
+    imageUrl: resolveMediaUrl(mediaUrls, row.image_path),
+    accent: row.accent,
+    sortOrder: row.sort_order ?? 0,
+    featured: row.featured ?? false,
+    storySlug: row.story_slug,
+    groupName: row.group_name,
+    status: row.status,
+    powers: (row.character_powers ?? []).map((relation) => relation.powers),
+  })) as Character[];
 }
 
-export async function getCharacter(slug: string) {
+const getCachedCharacters = unstable_cache(
+  loadCharacters,
+  ["published-characters"],
+  {
+    revalidate: DATA_CACHE_SECONDS,
+    tags: ["characters"],
+  },
+);
+
+export const getCharacters = cache(async (): Promise<Character[]> =>
+  getCachedCharacters(),
+);
+
+export const getCharacter = cache(async (slug: string) => {
   return (
     (await getCharacters()).find((character) => character.slug === slug) ?? null
   );
-}
+});
 
-export async function getGalleryItems(): Promise<GalleryItem[]> {
-  noStore();
+async function loadGalleryItems(): Promise<GalleryItem[]> {
   const client = createPublicSupabaseClient();
   if (!client) return demoGallery;
 
   const [galleryResult, characterResult] = await Promise.all([
     client
       .from("gallery_items")
-      .select("*")
+      .select(
+        "id,title,caption,image_path,related_label,related_type,status,created_at,accent",
+      )
       .eq("status", "published")
       .order("created_at", { ascending: false }),
     client
@@ -199,37 +287,37 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
   const galleryRows = galleryResult.data ?? [];
   const characterRows = characterResult.data ?? [];
   const galleryPaths = new Set(galleryRows.map((row) => row.image_path));
-  const galleryItems = await Promise.all(
-    galleryRows.map(async (row) => ({
-      id: row.id,
-      title: row.title,
-      caption: row.caption,
-      imageUrl: await signMediaPath(client, row.image_path),
-      relatedLabel: row.related_label,
-      relatedType: row.related_type,
+  const mediaUrls = await signMediaPaths(client, [
+    ...galleryRows.map((row) => row.image_path),
+    ...characterRows.map((row) => row.image_path),
+  ]);
+  const galleryItems = galleryRows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    caption: row.caption,
+    imageUrl: resolveMediaUrl(mediaUrls, row.image_path),
+    relatedLabel: row.related_label,
+    relatedType: row.related_type,
+    status: row.status,
+    createdAt: row.created_at,
+    accent: row.accent,
+  }));
+  const characterItems = characterRows
+    .filter(
+      (row): row is typeof row & { image_path: string } =>
+        Boolean(row.image_path) && !galleryPaths.has(row.image_path),
+    )
+    .map((row) => ({
+      id: `character-${row.id}`,
+      title: row.name,
+      caption: row.short_description,
+      imageUrl: resolveMediaUrl(mediaUrls, row.image_path),
+      relatedLabel: "Personagem",
+      relatedType: "character" as const,
       status: row.status,
       createdAt: row.created_at,
       accent: row.accent,
-    })),
-  );
-  const characterItems = await Promise.all(
-    characterRows
-      .filter(
-        (row): row is typeof row & { image_path: string } =>
-          Boolean(row.image_path) && !galleryPaths.has(row.image_path),
-      )
-      .map(async (row) => ({
-        id: `character-${row.id}`,
-        title: row.name,
-        caption: row.short_description,
-        imageUrl: await signMediaPath(client, row.image_path),
-        relatedLabel: "Personagem",
-        relatedType: "character" as const,
-        status: row.status,
-        createdAt: row.created_at,
-        accent: row.accent,
-      })),
-  );
+    }));
 
   return [...galleryItems, ...characterItems].sort(
     (first, second) =>
@@ -237,3 +325,16 @@ export async function getGalleryItems(): Promise<GalleryItem[]> {
       new Date(first.createdAt).getTime(),
   ) as GalleryItem[];
 }
+
+const getCachedGalleryItems = unstable_cache(
+  loadGalleryItems,
+  ["published-gallery-items"],
+  {
+    revalidate: DATA_CACHE_SECONDS,
+    tags: ["gallery", "characters"],
+  },
+);
+
+export const getGalleryItems = cache(async (): Promise<GalleryItem[]> =>
+  getCachedGalleryItems(),
+);

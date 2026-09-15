@@ -9,7 +9,6 @@ type GalleryValue = {
   image_path?: string | null;
   related_label?: string | null;
   related_type?: string | null;
-  accent?: string;
   status?: string;
 };
 export function GalleryForm({ item = {} }: { item?: GalleryValue }) {
@@ -44,7 +43,7 @@ export function GalleryForm({ item = {} }: { item?: GalleryValue }) {
           maxLength={400}
         />
       </label>
-      <div className="form-grid form-grid-three">
+      <div className="form-grid">
         <label>
           Relacionado a
           <input
@@ -61,16 +60,6 @@ export function GalleryForm({ item = {} }: { item?: GalleryValue }) {
           >
             <option value="story">História</option>
             <option value="character">Personagem</option>
-          </select>
-        </label>
-        <label>
-          Cor principal
-          <select name="accent" defaultValue={item.accent ?? "blue"}>
-            <option value="blue">Azul</option>
-            <option value="red">Vermelho</option>
-            <option value="yellow">Amarelo</option>
-            <option value="green">Verde</option>
-            <option value="violet">Violeta</option>
           </select>
         </label>
       </div>

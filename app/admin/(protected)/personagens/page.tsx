@@ -4,12 +4,12 @@ import { deleteCharacter } from "@/app/admin/actions";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 export default async function AdminCharactersPage({ searchParams }: PageProps) {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
-  const { data: characters } = await client!
+  const { data: characters } = await client
     .from("characters")
     .select("id,name,slug,role,status,sort_order,updated_at")
     .order("sort_order", { ascending: true })

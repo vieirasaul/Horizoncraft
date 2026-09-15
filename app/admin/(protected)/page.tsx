@@ -1,21 +1,21 @@
 import Link from "next/link";
 import { BookOpen, Images, Plus, Sparkles, Users } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
   const [stories, characters, powers, gallery] = await Promise.all([
-    client!
+    client
       .from("stories")
       .select("id,chapters(id,status)")
       .order("featured", { ascending: false })
       .order("created_at", { ascending: true })
       .limit(1),
-    client!.from("characters").select("id,status"),
-    client!.from("powers").select("id"),
-    client!.from("gallery_items").select("id,status"),
+    client.from("characters").select("id,status"),
+    client.from("powers").select("id"),
+    client.from("gallery_items").select("id,status"),
   ]);
   const chapters = stories.data?.[0]?.chapters ?? [];
   const cards = [

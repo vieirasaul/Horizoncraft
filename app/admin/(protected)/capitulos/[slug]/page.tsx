@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { ChapterForm } from "@/components/admin/chapter-form";
 import { Notice } from "@/components/admin/notice";
 import { AdminPageHeader } from "@/components/admin/page-header";
-import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -14,20 +14,11 @@ export default async function EditChapterPage({
   searchParams,
 }: PageProps) {
   const { slug } = await params;
-  const { client } = await getAuthenticatedAdmin();
+  const client = await createServerSupabaseClient();
   if (!client) return null;
-  const { data: stories } = await client
-    .from("stories")
-    .select("id")
-    .order("featured", { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(1);
-  const story = stories?.[0];
-  if (!story) notFound();
   const { data: chapter } = await client
     .from("chapters")
     .select("*")
-    .eq("story_id", story.id)
     .eq("slug", slug)
     .single();
   if (!chapter) notFound();
@@ -41,7 +32,7 @@ export default async function EditChapterPage({
       />
       <section className="admin-content admin-form-wrap">
         <Notice error={(await searchParams).erro} />
-        <ChapterForm storyId={story.id} chapter={chapter} />
+        <ChapterForm storyId={chapter.story_id} chapter={chapter} />
       </section>
     </main>
   );
