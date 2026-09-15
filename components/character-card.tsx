@@ -12,8 +12,10 @@ export function CharacterCard({ character }: { character: Character }) {
         ? "Vilão"
         : "Outro";
   return (
-    <article
+    <Link
       className={`collectible-card role-${character.role} accent-${character.accent}`}
+      href={`/personagens/${character.slug}`}
+      aria-label={`Ver personagem ${character.name}`}
     >
       <div className="collectible-topline">
         <span>Horizoncraft</span>
@@ -37,10 +39,10 @@ export function CharacterCard({ character }: { character: Character }) {
           />
         )}
         <p>{character.shortDescription}</p>
-        <Link href={`/personagens/${character.slug}`}>
+        <span className="collectible-link-label">
           Ver personagem <ArrowUpRight aria-hidden="true" />
-        </Link>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }

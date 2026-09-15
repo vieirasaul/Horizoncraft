@@ -10,6 +10,7 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
+import { AnimatedHeroTitle } from "@/components/animated-hero-title";
 import { CharacterCard } from "@/components/character-card";
 import { HalftonePattern, Sticker } from "@/components/comic-decorations";
 import { CoverArt } from "@/components/cover-art";
@@ -69,10 +70,7 @@ export default async function HomePage() {
             <p className="eyebrow sticker-label">
               <Sparkles size={16} /> Uma história de heróis, poderes e aventuras
             </p>
-            <h1>
-              <span>Bem-vindo ao</span>
-              <span>Horizoncraft</span>
-            </h1>
+            <AnimatedHeroTitle />
             <p className="hero-lead">
               Conheça os personagens, descubra seus poderes e acompanhe uma
               história que está apenas começando.
@@ -297,27 +295,6 @@ export default async function HomePage() {
             <Link className="button button-secondary" href="/galeria">
               Ver a galeria <ArrowRight aria-hidden="true" />
             </Link>
-          </div>
-        </section>
-
-        <section className="about-horizoncraft">
-          <div className="page-width about-grid">
-            <div className="about-mark" aria-hidden="true">
-              <span>H</span>
-            </div>
-            <div>
-              <p className="section-kicker">Sobre Horizoncraft</p>
-              <h2>Uma aventura criada por Théo</h2>
-            </div>
-            <div>
-              <p>
-                Horizoncraft reúne os personagens, poderes, desenhos e capítulos
-                de uma história que continuará crescendo com novas ideias.
-              </p>
-              <Link className="text-link" href="/historias">
-                Conhecer a história <ArrowRight aria-hidden="true" />
-              </Link>
-            </div>
           </div>
         </section>
       </main>
