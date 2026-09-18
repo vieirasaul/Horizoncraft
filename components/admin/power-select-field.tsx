@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, X } from "lucide-react";
+import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
 
 export type PowerOption = {
   id: string;
@@ -81,13 +82,16 @@ export function PowerSelectField({
                     <strong>{power.name}</strong>
                     <small>{power.description}</small>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => removePower(power.id)}
-                    aria-label={`Remover ${power.name} deste personagem`}
-                  >
-                    <X aria-hidden="true" />
-                  </button>
+                  <DeleteConfirmationDialog
+                    title={`Remover “${power.name}” deste personagem?`}
+                    description="O poder será retirado deste personagem quando você salvar as alterações."
+                    triggerLabel="Remover"
+                    confirmLabel="Remover poder"
+                    triggerIcon={<X aria-hidden="true" />}
+                    showTriggerLabel={false}
+                    triggerAriaLabel={`Remover ${power.name} deste personagem`}
+                    onConfirm={() => removePower(power.id)}
+                  />
                 </li>
               ))}
             </ul>

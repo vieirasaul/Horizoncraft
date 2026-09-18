@@ -2704,13 +2704,35 @@ h3 {
   color: var(--ink-soft);
 }
 .admin-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   width: max-content;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border: 2px solid var(--ink);
   border-radius: 999px;
-  font-size: 0.72rem;
+  box-shadow: 2px 2px 0 var(--ink);
+  font-size: 0.76rem;
   font-weight: 900;
+  letter-spacing: 0.035em;
   text-transform: uppercase;
+}
+.admin-status::before {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+.admin-status.status-published {
+  background: #b9f7cb;
+  color: #08713a;
+}
+.admin-status.status-draft {
+  background: #ffe39a;
+  color: #805500;
 }
 .icon-button,
 .danger-button,
@@ -3025,7 +3047,7 @@ h3 {
   font-size: 0.76rem;
   font-weight: 800;
 }
-.power-delete-dialog {
+.delete-dialog {
   position: fixed;
   inset: 0;
   width: min(500px, calc(100% - 32px));
@@ -3036,11 +3058,11 @@ h3 {
   background: transparent;
   border: 0;
 }
-.power-delete-dialog::backdrop {
+.delete-dialog::backdrop {
   background: rgb(20 29 51 / 72%);
   backdrop-filter: blur(3px);
 }
-.power-delete-dialog-card {
+.delete-dialog-card {
   position: relative;
   display: grid;
   justify-items: center;
@@ -3051,7 +3073,7 @@ h3 {
   box-shadow: 10px 10px 0 var(--ink);
   text-align: center;
 }
-.power-delete-dialog-close {
+.delete-dialog-close {
   position: absolute;
   top: 14px;
   right: 14px;
@@ -3063,10 +3085,10 @@ h3 {
   border: 2px solid var(--ink);
   border-radius: 8px;
 }
-.power-delete-dialog-close svg {
+.delete-dialog-close svg {
   width: 18px;
 }
-.power-delete-dialog-icon {
+.delete-dialog-icon {
   display: grid;
   place-items: center;
   width: 58px;
@@ -3077,29 +3099,29 @@ h3 {
   border: 2px solid var(--ink);
   border-radius: 14px;
 }
-.power-delete-dialog-icon svg {
+.delete-dialog-icon svg {
   width: 30px;
   height: 30px;
 }
-.power-delete-dialog h2 {
+.delete-dialog h2 {
   margin: 0;
   font-size: 2rem;
 }
-.power-delete-dialog p {
+.delete-dialog p {
   max-width: 390px;
   margin: 12px 0 24px;
   color: var(--ink-soft);
   font-weight: 700;
 }
-.power-delete-dialog-actions {
+.delete-dialog-actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
-.power-delete-dialog-actions button {
+.delete-dialog-actions button {
   min-height: 42px;
 }
-.power-delete-dialog-actions .danger-button {
+.delete-dialog-actions .danger-button {
   color: var(--white);
   background: #b91c2d;
 }
@@ -3148,9 +3170,6 @@ h3 {
 .admin-chapter-summary h2 {
   margin: 2px 0 0;
   font-size: 1.2rem;
-}
-.admin-chapters small {
-  color: var(--ink-soft);
 }
 .admin-chapter-actions {
   display: flex;
@@ -3331,6 +3350,11 @@ h3 {
 }
 .block-heading strong {
   font-family: var(--display);
+}
+.block-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .add-block {
   width: max-content;

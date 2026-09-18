@@ -49,7 +49,10 @@ export default async function AdminGalleryPage({ searchParams }: PageProps) {
                     name="image_path"
                     value={item.image_path}
                   />
-                  <DeleteButton />
+                  <DeleteButton
+                    title={`Excluir “${item.title}”?`}
+                    confirmMessage="Este desenho será excluído permanentemente."
+                  />
                 </form>
               </article>
             ))}

@@ -53,7 +53,10 @@ export default async function AdminCharactersPage({ searchParams }: PageProps) {
                 </Link>
                 <form action={deleteCharacter}>
                   <input type="hidden" name="id" value={character.id} />
-                  <DeleteButton />
+                  <DeleteButton
+                    title={`Excluir “${character.name}”?`}
+                    confirmMessage="Este personagem será excluído permanentemente."
+                  />
                 </form>
               </article>
             ))}

@@ -47,11 +47,15 @@ export default async function AdminChaptersPage({ searchParams }: PageProps) {
                       {String(chapter.chapter_number).padStart(2, "0")}
                     </strong>
                     <span className="admin-chapter-summary">
-                      <small>
+                      <span
+                        className={`admin-status status-${
+                          chapter.status === "published" ? "published" : "draft"
+                        }`}
+                      >
                         {chapter.status === "published"
                           ? "Publicado"
                           : "Rascunho"}
-                      </small>
+                      </span>
                       <h2>{chapter.title}</h2>
                     </span>
                     <div className="admin-chapter-actions">
@@ -107,7 +111,10 @@ export default async function AdminChaptersPage({ searchParams }: PageProps) {
                       <form action={deleteChapter}>
                         <input type="hidden" name="id" value={chapter.id} />
                         <input type="hidden" name="story_id" value={story.id} />
-                        <DeleteButton />
+                        <DeleteButton
+                          title={`Excluir “${chapter.title}”?`}
+                          confirmMessage="Este capítulo será excluído permanentemente."
+                        />
                       </form>
                     </div>
                   </li>

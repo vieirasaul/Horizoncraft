@@ -1,20 +1,22 @@
 "use client";
+
+import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
+
 export function DeleteButton({
   label = "Excluir",
   confirmMessage = "Tem certeza? Esta ação não poderá ser desfeita.",
+  title = "Confirmar exclusão",
 }: {
   label?: string;
   confirmMessage?: string;
+  title?: string;
 }) {
   return (
-    <button
-      className="danger-button"
-      type="submit"
-      onClick={(event) => {
-        if (!window.confirm(confirmMessage)) event.preventDefault();
-      }}
-    >
-      {label}
-    </button>
+    <DeleteConfirmationDialog
+      title={title}
+      description={confirmMessage}
+      triggerLabel={label}
+      confirmLabel={label}
+    />
   );
 }

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Trash2, Upload } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
 
 const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 const maxBytes = 3 * 1024 * 1024;
@@ -115,8 +116,7 @@ export function ImageUploadField({
     }
   }
   async function remove() {
-    if (!path || !window.confirm("Excluir este arquivo do armazenamento?"))
-      return;
+    if (!path) return;
     const client = createBrowserSupabaseClient();
     setBusy(true);
     const { error } = (await client?.storage.from("media").remove([path])) ?? {
@@ -176,14 +176,15 @@ export function ImageUploadField({
           {busy ? "Enviando…" : path ? "Substituir" : "Escolher imagem"}
         </button>
         {path && (
-          <button
-            type="button"
-            className="danger-button"
+          <DeleteConfirmationDialog
+            title="Excluir arquivo?"
+            description="Este arquivo será removido permanentemente do armazenamento."
+            triggerLabel="Excluir arquivo"
+            confirmLabel="Excluir arquivo"
+            triggerIcon={<Trash2 aria-hidden="true" />}
+            onConfirm={remove}
             disabled={busy}
-            onClick={() => void remove()}
-          >
-            <Trash2 /> Excluir arquivo
-          </button>
+          />
         )}
       </div>
       <small>

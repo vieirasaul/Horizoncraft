@@ -11,6 +11,7 @@ import {
   Type,
 } from "lucide-react";
 import type { ContentBlock } from "@/lib/types";
+import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 const blockLabels: Record<ContentBlock["type"], string> = {
@@ -84,7 +85,7 @@ export function ChapterEditor({
           <div className="editor-block" key={block.id}>
             <div className="block-heading">
               <strong>{blockLabels[block.type]}</strong>
-              <span>
+              <div className="block-heading-actions">
                 <button
                   type="button"
                   onClick={() => move(index, -1)}
@@ -101,18 +102,18 @@ export function ChapterEditor({
                 >
                   <ChevronDown />
                 </button>
-                <button
-                  type="button"
-                  className="danger-button"
-                  onClick={() =>
+                <DeleteConfirmationDialog
+                  title={`Remover ${blockLabels[block.type].toLocaleLowerCase()}?`}
+                  description="O bloco será removido do editor. Salve o capítulo para aplicar a alteração."
+                  triggerLabel="Remover"
+                  confirmLabel="Remover"
+                  onConfirm={() =>
                     setBlocks((current) =>
                       current.filter((item) => item.id !== block.id),
                     )
                   }
-                >
-                  Remover
-                </button>
-              </span>
+                />
+              </div>
             </div>
             {block.type === "image" ? (
               <>
