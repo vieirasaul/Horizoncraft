@@ -52,7 +52,7 @@ export function CharacterForm({
           />
         </label>
       </div>
-      <div className="form-grid form-grid-four">
+      <div className="form-grid form-grid-three">
         <label>
           Categoria
           <select name="role" defaultValue={character.role ?? "hero"}>
@@ -80,10 +80,8 @@ export function CharacterForm({
             defaultValue={character.sort_order ?? 0}
           />
         </label>
-        <PublicationToggle
-          defaultPublished={character.status === "published"}
-        />
       </div>
+      <PublicationToggle defaultPublished={character.status === "published"} />
       <label>
         Descrição curta
         <textarea
