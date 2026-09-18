@@ -6,6 +6,10 @@ The application combines a playful, comic-inspired public website with a secure 
 
 The current product presents Horizoncraft as one continuous story composed of multiple chapters, with characters, powers, and artwork connected to the same universe.
 
+## Live demo
+
+**[https://horizoncraft.vercel.app/](https://horizoncraft.vercel.app/)**
+
 ## What the application includes
 
 ### Public experience
@@ -142,6 +146,7 @@ npm run start        # Run the production server
 npm run lint         # Run ESLint
 npm run typecheck    # Validate TypeScript types
 npm test             # Run the test suite
+npm run test:e2e     # Run public-site end-to-end tests
 npm run format:check # Check formatting
 ```
 
