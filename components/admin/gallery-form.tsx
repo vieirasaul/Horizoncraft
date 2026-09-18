@@ -1,5 +1,6 @@
 import { saveGalleryItem } from "@/app/admin/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
+import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
 
 type GalleryValue = {
@@ -25,13 +26,7 @@ export function GalleryForm({ item = {} }: { item?: GalleryValue }) {
             maxLength={100}
           />
         </label>
-        <label>
-          Publicação
-          <select name="status" defaultValue={item.status ?? "draft"}>
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-          </select>
-        </label>
+        <PublicationToggle defaultPublished={item.status === "published"} />
       </div>
       <label>
         Legenda

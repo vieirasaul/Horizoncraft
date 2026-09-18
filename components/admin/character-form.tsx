@@ -4,6 +4,7 @@ import {
   PowerSelectField,
   type PowerOption,
 } from "@/components/admin/power-select-field";
+import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
 
 type CharacterValue = {
@@ -79,13 +80,9 @@ export function CharacterForm({
             defaultValue={character.sort_order ?? 0}
           />
         </label>
-        <label>
-          Publicação
-          <select name="status" defaultValue={character.status ?? "draft"}>
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-          </select>
-        </label>
+        <PublicationToggle
+          defaultPublished={character.status === "published"}
+        />
       </div>
       <label>
         Descrição curta

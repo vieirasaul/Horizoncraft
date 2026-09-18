@@ -2716,6 +2716,7 @@ h3 {
   font-weight: 900;
   letter-spacing: 0.035em;
   text-transform: uppercase;
+  margin: 3px 0;
 }
 .admin-status::before {
   width: 9px;
@@ -2733,6 +2734,80 @@ h3 {
 .admin-status.status-draft {
   background: #ffe39a;
   color: #805500;
+}
+.admin-chapter-summary .admin-status {
+  margin-bottom: 9px;
+}
+.publication-toggle-field {
+  display: grid;
+  gap: 7px;
+}
+.publication-toggle-label {
+  font-weight: 800;
+}
+.publication-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(100%, 430px);
+  min-height: 72px;
+  padding: 10px 14px 10px 17px;
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-small);
+  color: var(--ink);
+  text-align: left;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+.publication-toggle:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.publication-toggle.is-published {
+  background: #b9f7cb;
+}
+.publication-toggle.is-draft {
+  background: #ffe39a;
+}
+.publication-toggle-copy {
+  display: grid;
+  gap: 1px;
+}
+.publication-toggle-copy strong {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.publication-toggle-copy small {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.publication-toggle-track {
+  position: relative;
+  display: block;
+  width: 58px;
+  height: 32px;
+  flex: 0 0 auto;
+  padding: 3px;
+  background: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+}
+.publication-toggle-thumb {
+  display: block;
+  width: 22px;
+  height: 22px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  transition: transform 0.16s ease;
+}
+.publication-toggle.is-published .publication-toggle-thumb {
+  transform: translateX(24px);
 }
 .icon-button,
 .danger-button,

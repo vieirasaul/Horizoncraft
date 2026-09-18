@@ -1,5 +1,6 @@
 import { saveChapter } from "@/app/admin/actions";
 import { ChapterEditor } from "@/components/admin/chapter-editor";
+import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
 import type { ContentBlock } from "@/lib/types";
 type ChapterValue = {
@@ -49,13 +50,7 @@ export function ChapterForm({
           />
         </label>
       </div>
-      <label>
-        Publicação
-        <select name="status" defaultValue={chapter.status ?? "draft"}>
-          <option value="draft">Rascunho</option>
-          <option value="published">Publicado</option>
-        </select>
-      </label>
+      <PublicationToggle defaultPublished={chapter.status === "published"} />
       <ChapterEditor initialBlocks={chapter.content} />
       <div className="form-actions">
         <SubmitButton>
