@@ -2842,7 +2842,7 @@ h3 {
   display: inline-flex;
   gap: 6px;
   padding: 7px 10px;
-  background: #b91c2d;
+  background: var(--red);
   color: var(--white);
   font-weight: 800;
 }
@@ -3059,7 +3059,7 @@ h3 {
   width: 34px;
   height: 34px;
   padding: 0;
-  background: #b91c2d;
+  background: var(--red);
   color: var(--white);
 }
 .power-picker-empty a {
@@ -3227,7 +3227,7 @@ h3 {
 }
 .delete-dialog-actions .danger-button {
   color: var(--white);
-  background: #b91c2d;
+  background: var(--red);
 }
 .admin-subsection {
   margin-top: 48px;
