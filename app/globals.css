@@ -2842,7 +2842,8 @@ h3 {
   display: inline-flex;
   gap: 6px;
   padding: 7px 10px;
-  color: #a61727;
+  background: #b91c2d;
+  color: var(--white);
   font-weight: 800;
 }
 .danger-button svg {
@@ -3058,8 +3059,8 @@ h3 {
   width: 34px;
   height: 34px;
   padding: 0;
-  background: #ffd1d6;
-  color: #a61727;
+  background: #b91c2d;
+  color: var(--white);
 }
 .power-picker-empty a {
   color: var(--blue-dark);
