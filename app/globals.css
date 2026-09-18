@@ -2742,6 +2742,9 @@ h3 {
   display: grid;
   gap: 7px;
 }
+.character-publication-toggle .publication-toggle {
+  width: min(100%, 330px);
+}
 .publication-toggle-label {
   font-weight: 800;
 }

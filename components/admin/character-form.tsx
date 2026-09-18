@@ -31,6 +31,11 @@ export function CharacterForm({
   return (
     <form action={saveCharacter} className="admin-form admin-editor-form">
       <input type="hidden" name="id" value={character.id ?? ""} />
+      <div className="character-publication-toggle">
+        <PublicationToggle
+          defaultPublished={character.status === "published"}
+        />
+      </div>
       <div className="form-grid">
         <label>
           Nome do personagem
@@ -81,7 +86,6 @@ export function CharacterForm({
           />
         </label>
       </div>
-      <PublicationToggle defaultPublished={character.status === "published"} />
       <label>
         Descrição curta
         <textarea
