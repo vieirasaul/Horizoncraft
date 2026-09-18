@@ -3027,6 +3027,7 @@ h3 {
 }
 .selected-powers li > span:first-child {
   display: grid;
+  gap: 4px;
 }
 .selected-powers li > span:first-child small {
   color: var(--ink-soft);
