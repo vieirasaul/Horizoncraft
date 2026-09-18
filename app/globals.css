@@ -3029,11 +3029,11 @@ h3 {
   border: 2px solid var(--ink);
   border-radius: 9px;
 }
-.selected-powers li > span:first-child {
+.selected-powers li > span {
   display: grid;
   gap: 4px;
 }
-.selected-powers li > span:first-child small {
+.selected-powers li > span small {
   color: var(--ink-soft);
   font-weight: 600;
 }
