@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { ADMIN_SUCCESS_COOKIE } from "@/lib/admin-flash-cookie";
+import "./notice.css";
 
 export function Notice({
   success,

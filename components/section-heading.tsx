@@ -1,3 +1,5 @@
+import "./section-heading.css";
+
 export function SectionHeading({
   eyebrow,
   title,

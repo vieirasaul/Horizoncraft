@@ -1,0 +1,97 @@
+.power-picker {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+  background: #f4f7fc;
+  border: 2px solid #8994aa;
+  border-radius: 12px;
+}
+.power-picker legend {
+  padding: 0 7px;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.power-picker > p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.power-picker-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+}
+.power-picker-controls .admin-secondary {
+  background: var(--blue);
+  color: var(--white);
+}
+.selected-powers {
+  display: grid;
+  gap: 8px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.selected-powers li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 9px;
+}
+.selected-powers li > span {
+  display: grid;
+  gap: 4px;
+}
+.selected-powers li > span small {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.selected-power-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.selected-power-actions > button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+}
+.selected-power-actions > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+.selected-power-actions > button svg {
+  width: 17px;
+}
+.selected-power-actions > .danger-button {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: var(--red);
+  color: var(--white);
+}
+.power-picker-empty a {
+  color: var(--blue-dark);
+  font-weight: 800;
+  text-decoration: underline;
+}
+@media (max-width: 580px) {
+  .power-picker-controls {
+    grid-template-columns: 1fr;
+  }
+  .power-picker-controls .admin-secondary {
+    width: 100%;
+  }
+}

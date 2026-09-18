@@ -7,6 +7,7 @@ import { InlineText } from "@/components/inline-text";
 import { PublicShell } from "@/components/public-shell";
 import { ReadingProgress } from "@/components/reading-progress";
 import { getChapter } from "@/lib/data";
+import "../../chapter-reader.css";
 
 type PageProps = { params: Promise<{ slug: string }> };
 export async function generateMetadata({

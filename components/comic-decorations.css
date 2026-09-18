@@ -1,0 +1,52 @@
+.comic-burst-shape {
+  display: grid;
+  place-items: center;
+  width: 135px;
+  aspect-ratio: 1;
+  flex: none;
+  padding: 20px;
+  background: var(--yellow);
+  border: 4px solid var(--ink);
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  clip-path: polygon(
+    50% 0,
+    61% 24%,
+    82% 8%,
+    78% 34%,
+    100% 38%,
+    80% 52%,
+    96% 70%,
+    70% 69%,
+    72% 98%,
+    54% 77%,
+    38% 100%,
+    37% 76%,
+    10% 90%,
+    23% 64%,
+    0 55%,
+    25% 45%,
+    6% 24%,
+    33% 28%
+  );
+}
+.halftone-pattern {
+  position: absolute;
+  background-image: radial-gradient(currentColor 1.8px, transparent 2px);
+  background-size: 13px 13px;
+}
+.comic-sticker {
+  display: inline-block;
+  width: max-content;
+  padding: 7px 11px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--yellow);
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: var(--display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}

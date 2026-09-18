@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PublicShell } from "@/components/public-shell";
 import { getCharacters } from "@/lib/data";
 import type { Character, Power } from "@/lib/types";
+import "../public-pages.css";
 
 type PowerEntry = Power & {
   characters: Array<Pick<Character, "name" | "slug" | "accent">>;

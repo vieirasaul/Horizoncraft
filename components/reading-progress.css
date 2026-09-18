@@ -1,0 +1,9 @@
+.reading-progress {
+  position: fixed;
+  z-index: 80;
+  left: 0;
+  top: 0;
+  height: 6px;
+  background: var(--red);
+  transform-origin: left;
+}

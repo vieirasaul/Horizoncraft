@@ -1,0 +1,25 @@
+.loading-screen,
+.error-screen,
+.not-found {
+  min-height: 72vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: 50px 24px;
+  text-align: center;
+}
+.error-screen h1,
+.not-found h1 {
+  max-width: 800px;
+  font-size: clamp(2.8rem, 7vw, 5.7rem);
+}
+.error-screen p,
+.not-found p {
+  max-width: 620px;
+}
+.not-found > svg {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+  color: var(--red);
+}

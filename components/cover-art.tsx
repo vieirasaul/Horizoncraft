@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ThemeColor } from "@/lib/types";
+import "./cover-art.css";
 
 export function CoverArt({
   title,

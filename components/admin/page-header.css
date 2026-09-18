@@ -1,0 +1,38 @@
+.admin-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 45px clamp(24px, 5vw, 64px);
+  background: var(--white);
+  border-bottom: var(--line);
+}
+.admin-page-heading {
+  min-width: 0;
+  text-align: left;
+}
+.admin-page-header h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 5vw, 4.7rem);
+}
+.admin-page-description {
+  max-width: 650px;
+  margin: 12px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+.admin-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+}
+@media (max-width: 580px) {
+  .admin-page-header {
+    display: block;
+  }
+  .admin-page-header .admin-primary {
+    margin-top: 22px;
+  }
+}

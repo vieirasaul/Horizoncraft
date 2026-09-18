@@ -13,6 +13,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import "./mobile-navigation.css";
 
 export function AdminMobileNavigation({
   displayName,

@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { useId, useRef, useState } from "react";
 import { AlertTriangle, Trash2, X } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import "./admin-form.css";
+import "./delete-confirmation-dialog.css";
 
 export function DeleteConfirmationDialog({
   title = "Confirmar exclusão",

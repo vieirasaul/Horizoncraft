@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Github, Linkedin, LogIn } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import "./site-footer.css";
 
 export function SiteFooter({ isAuthenticated }: { isAuthenticated: boolean }) {
   const accountHref = isAuthenticated ? "/admin" : "/admin/login";

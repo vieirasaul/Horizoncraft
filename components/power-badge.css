@@ -1,0 +1,14 @@
+.power-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.power-badge {
+  background: color-mix(in srgb, var(--card-accent) 22%, var(--white));
+}

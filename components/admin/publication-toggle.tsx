@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import "./publication-toggle.css";
 
 export function PublicationToggle({
   defaultPublished = false,

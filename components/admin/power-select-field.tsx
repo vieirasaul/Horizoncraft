@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
+import "./admin-form.css";
+import "./power-select-field.css";
 
 export type PowerOption = {
   id: string;

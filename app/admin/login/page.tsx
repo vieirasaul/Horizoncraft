@@ -6,6 +6,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { signIn } from "@/app/admin/actions";
 import { SubmitButton } from "@/components/admin/submit-button";
 import { getAuthenticatedAdmin } from "@/lib/supabase/server";
+import "../admin.css";
 
 type PageProps = { searchParams: Promise<{ erro?: string }> };
 const errors: Record<string, string> = {

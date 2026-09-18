@@ -1,0 +1,98 @@
+.danger-button {
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.danger-button {
+  display: inline-flex;
+  gap: 6px;
+  padding: 7px 10px;
+  background: var(--red);
+  color: var(--white);
+  font-weight: 800;
+}
+.danger-button svg {
+  width: 17px;
+}
+.delete-dialog {
+  position: fixed;
+  inset: 0;
+  width: min(500px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: visible;
+  background: transparent;
+  border: 0;
+}
+.delete-dialog::backdrop {
+  background: rgb(20 29 51 / 72%);
+  backdrop-filter: blur(3px);
+}
+.delete-dialog-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  padding: 34px;
+  background: var(--white);
+  border: var(--line);
+  border-radius: 16px;
+  box-shadow: 10px 10px 0 var(--ink);
+  text-align: center;
+}
+.delete-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+}
+.delete-dialog-close svg {
+  width: 18px;
+}
+.delete-dialog-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 18px;
+  color: #a61727;
+  background: #ffd1d6;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+}
+.delete-dialog-icon svg {
+  width: 30px;
+  height: 30px;
+}
+.delete-dialog h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+.delete-dialog p {
+  max-width: 390px;
+  margin: 12px 0 24px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.delete-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.delete-dialog-actions button {
+  min-height: 42px;
+}
+.delete-dialog-actions .danger-button {
+  color: var(--white);
+  background: var(--red);
+}

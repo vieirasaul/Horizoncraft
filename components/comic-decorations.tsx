@@ -1,3 +1,5 @@
+import "./comic-decorations.css";
+
 export function ComicBurst({
   children,
   className = "",

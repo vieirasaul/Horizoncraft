@@ -1,0 +1,40 @@
+.loading-state {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.loading-state p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-weight: 800;
+}
+.loading-state-panel {
+  min-height: 72vh;
+  padding: 48px 24px;
+  background-image: radial-gradient(
+    rgba(23, 107, 255, 0.12) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 14px 14px;
+}
+.loading-state-panel .loading-portal {
+  width: 72px;
+  border-width: 10px;
+}
+.loading-portal {
+  width: 90px;
+  aspect-ratio: 1;
+  border: 12px solid var(--yellow);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--ink);
+  background: var(--blue);
+  animation: bob 1s ease-in-out infinite alternate;
+}
+
+@keyframes bob {
+  to {
+    transform: translateY(-9px) rotate(4deg);
+  }
+}

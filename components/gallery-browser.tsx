@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Maximize2, X } from "lucide-react";
 import type { GalleryItem } from "@/lib/types";
 import { EmptyState } from "@/components/empty-state";
+import "./gallery-browser.css";
 
 function GalleryArtwork({ item }: { item: GalleryItem }) {
   return (

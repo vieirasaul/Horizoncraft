@@ -1,0 +1,61 @@
+.add-block {
+  display: inline-grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.chapter-editor {
+  display: grid;
+  gap: 15px;
+}
+.editor-help {
+  padding: 15px;
+  background: #e9f0ff;
+  border: 2px solid var(--blue);
+  border-radius: 10px;
+}
+.editor-help p {
+  margin: 0;
+}
+.block-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.block-toolbar button,
+.add-block {
+  padding: 8px 11px;
+  font-weight: 800;
+}
+.editor-blocks {
+  display: grid;
+  gap: 14px;
+}
+.editor-block {
+  padding: 16px;
+  background: #f8fafc;
+  border: 2px solid #8994aa;
+  border-radius: 10px;
+}
+.block-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.block-heading strong {
+  font-family: var(--display);
+}
+.block-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.add-block {
+  width: max-content;
+  background: var(--yellow);
+}

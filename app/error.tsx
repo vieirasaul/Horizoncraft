@@ -1,5 +1,8 @@
 "use client";
+
 import { useEffect } from "react";
+import "./states.css";
+
 export default function ErrorPage({
   error,
   reset,

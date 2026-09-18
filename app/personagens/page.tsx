@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CharacterBrowser } from "@/components/character-browser";
 import { PublicShell } from "@/components/public-shell";
 import { getCharacters } from "@/lib/data";
+import "../public-pages.css";
 
 export const metadata: Metadata = {
   title: "Personagens de Horizoncraft",

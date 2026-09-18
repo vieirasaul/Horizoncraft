@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { AdminMobileNavigation } from "@/components/admin/mobile-navigation";
+import "../admin.css";
 import { BrandMark } from "@/components/brand-mark";
 import { Notice } from "@/components/admin/notice";
 import { signOut } from "@/app/admin/actions";

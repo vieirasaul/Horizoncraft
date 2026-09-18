@@ -5,6 +5,8 @@ import { ArrowRight } from "lucide-react";
 import { CoverArt } from "@/components/cover-art";
 import { EmptyState } from "@/components/empty-state";
 import type { Story, StoryProgress } from "@/lib/types";
+import "./filter-controls.css";
+import "./story-browser.css";
 
 const filters: Array<{ value: "all" | StoryProgress; label: string }> = [
   { value: "all", label: "Todas" },

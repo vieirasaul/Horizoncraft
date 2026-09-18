@@ -10,6 +10,8 @@ import {
   Text,
   Type,
 } from "lucide-react";
+import "./admin-form.css";
+import "./chapter-editor.css";
 import type { ContentBlock } from "@/lib/types";
 import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
 import { ImageUploadField } from "@/components/admin/image-upload-field";

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getCharacterVisualKey } from "@/lib/content-identity";
 import type { ThemeColor } from "@/lib/types";
+import "./character-artwork.css";
 
 export function CharacterArtwork({
   id,

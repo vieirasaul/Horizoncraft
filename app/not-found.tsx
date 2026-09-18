@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft, Radar } from "lucide-react";
 import { PublicShell } from "@/components/public-shell";
+import "./states.css";
+
 export default function NotFoundPage() {
   return (
     <PublicShell>

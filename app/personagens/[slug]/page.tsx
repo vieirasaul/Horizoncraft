@@ -6,6 +6,7 @@ import { CharacterArtwork } from "@/components/character-artwork";
 import { PowerBadge } from "@/components/power-badge";
 import { PublicShell } from "@/components/public-shell";
 import { getCharacter } from "@/lib/data";
+import "../../character-detail.css";
 
 type PageProps = { params: Promise<{ slug: string }> };
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GalleryBrowser } from "@/components/gallery-browser";
 import { PublicShell } from "@/components/public-shell";
 import { getGalleryItems } from "@/lib/data";
+import "../public-pages.css";
 
 export const metadata: Metadata = {
   title: "Desenhos do Horizoncraft",

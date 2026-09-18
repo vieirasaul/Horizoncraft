@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
+import "./admin-form.css";
+import "./page-header.css";
+
 export function AdminPageHeader({
   title,
   description,

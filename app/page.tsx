@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import "./home.css";
 import {
   Anvil,
   ArrowRight,
@@ -61,7 +62,8 @@ export default async function HomePage() {
         <section className="hero">
           <div className="hero-copy">
             <p className="eyebrow sticker-label">
-              <Sparkles size={16} /> Uma história de heróis, poderes e aventuras
+              <Sparkles size={16} />
+              <span>Uma história de heróis, poderes e aventuras</span>
             </p>
             <AnimatedHeroTitle />
             <p className="hero-lead">

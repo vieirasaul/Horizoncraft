@@ -1,5 +1,8 @@
 "use client";
+
 import { useFormStatus } from "react-dom";
+import "./admin-form.css";
+
 export function SubmitButton({
   children = "Salvar",
   pendingLabel = "Salvando…",

@@ -1,5 +1,6 @@
 import { Zap } from "lucide-react";
 import type { ThemeColor } from "@/lib/types";
+import "./power-badge.css";
 
 export function PowerBadge({
   name,

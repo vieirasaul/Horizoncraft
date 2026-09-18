@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { CharacterCard } from "@/components/character-card";
 import { EmptyState } from "@/components/empty-state";
 import type { Character, CharacterRole } from "@/lib/types";
+import "./filter-controls.css";
 
 const roles: Array<{ value: "all" | CharacterRole; label: string }> = [
   { value: "all", label: "Todos" },

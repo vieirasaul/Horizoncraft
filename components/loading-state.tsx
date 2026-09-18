@@ -1,3 +1,5 @@
+import "./loading-state.css";
+
 type LoadingStateProps = {
   variant?: "page" | "panel";
 };

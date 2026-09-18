@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
 import { PublicShell } from "@/components/public-shell";
 import { getStories } from "@/lib/data";
+import "../public-pages.css";
 
 export const metadata: Metadata = {
   title: "Capítulos",

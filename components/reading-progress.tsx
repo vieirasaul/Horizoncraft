@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import "./reading-progress.css";
 export function ReadingProgress() {
   const [progress, setProgress] = useState(0);
   useEffect(() => {

@@ -1,0 +1,212 @@
+.character-artwork {
+  position: relative;
+  aspect-ratio: 4 / 4.6;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--card-accent) 24%, var(--cream));
+  border-bottom: var(--line);
+  isolation: isolate;
+}
+.character-artwork::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.17;
+  background-image: radial-gradient(var(--ink) 1.4px, transparent 1.5px);
+  background-size: 11px 11px;
+}
+.character-artwork img {
+  object-fit: cover;
+}
+.art-aura,
+.art-symbol,
+.art-detail {
+  position: absolute;
+  display: block;
+}
+.art-aura {
+  left: 12%;
+  right: 12%;
+  top: 12%;
+  bottom: 9%;
+  background: var(--card-accent);
+  border: 4px solid var(--ink);
+  border-radius: 50% 44% 48% 42%;
+  transform: rotate(-5deg);
+}
+.art-symbol {
+  z-index: 2;
+  left: 28%;
+  right: 28%;
+  top: 27%;
+  bottom: 20%;
+  background: var(--ink);
+  border: 4px solid var(--white);
+}
+.art-detail {
+  z-index: 3;
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+}
+.art-detail-one {
+  width: 35px;
+  height: 65px;
+  left: 14%;
+  top: 18%;
+  transform: rotate(-25deg);
+}
+.art-detail-two {
+  width: 28px;
+  height: 92px;
+  right: 12%;
+  top: 24%;
+  transform: rotate(26deg);
+}
+.art-detail-three {
+  width: 75px;
+  height: 20px;
+  right: 9%;
+  bottom: 12%;
+  transform: rotate(-12deg);
+}
+.character-artwork-caveira-vermelha .art-symbol {
+  left: 24%;
+  right: 24%;
+  top: 25%;
+  bottom: 26%;
+  border-radius: 46% 46% 36% 36%;
+  background: linear-gradient(to bottom, var(--red) 0 48%, var(--ink) 49%);
+}
+.character-artwork-caveira-vermelha .art-symbol::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 20%;
+  height: 24%;
+  background: var(--ink);
+  clip-path: polygon(
+    0 20%,
+    42% 0,
+    48% 100%,
+    0 76%,
+    100% 20%,
+    58% 0,
+    52% 100%,
+    100% 76%
+  );
+}
+.character-artwork-caveira-vermelha .art-detail-one,
+.character-artwork-caveira-vermelha .art-detail-two {
+  border-radius: 50%;
+  background: transparent;
+  border: 8px solid var(--ink);
+}
+.character-artwork-caveira-vermelha .art-detail-three {
+  clip-path: polygon(50% 0, 100% 100%, 60% 77%, 40% 100%, 0 100%);
+  background: var(--red);
+}
+.character-artwork-kauan-raio .art-symbol {
+  border: 0;
+  background: var(--yellow);
+  clip-path: polygon(
+    58% 0,
+    100% 0,
+    66% 38%,
+    98% 38%,
+    24% 100%,
+    43% 56%,
+    4% 56%
+  );
+  filter: drop-shadow(5px 5px 0 var(--ink));
+}
+.character-artwork-kauan-raio .art-detail {
+  height: 4px;
+  background: var(--ink);
+  border: 0;
+  transform-origin: left;
+}
+.character-artwork-kauan-raio .art-detail-one {
+  width: 90px;
+  left: 5%;
+  top: 22%;
+  transform: rotate(18deg);
+}
+.character-artwork-kauan-raio .art-detail-two {
+  width: 100px;
+  right: -10%;
+  top: 30%;
+  transform: rotate(-28deg);
+}
+.character-artwork-kauan-raio .art-detail-three {
+  width: 80px;
+  right: 3%;
+  bottom: 15%;
+  transform: rotate(22deg);
+}
+.character-artwork-metanic .art-aura {
+  background: linear-gradient(
+    135deg,
+    #aeb7c4 0 33%,
+    #bd814e 33% 66%,
+    #d7e3e7 66%
+  );
+  border-radius: 10px;
+}
+.character-artwork-metanic .art-symbol {
+  left: 23%;
+  right: 23%;
+  top: 20%;
+  bottom: 18%;
+  background: repeating-linear-gradient(
+    135deg,
+    #8794a8 0 18px,
+    #c9d2dc 18px 34px
+  );
+  border-radius: 8px;
+  transform: rotate(5deg);
+}
+.character-artwork-metanic .art-detail {
+  width: 53px;
+  height: 53px;
+  background: #a96034;
+  border-radius: 6px;
+}
+.character-artwork-metanic .art-detail-two {
+  background: #d6e5e7;
+  border-radius: 50%;
+}
+.character-artwork-blood-phantom .art-aura {
+  background: radial-gradient(
+    circle at 45% 43%,
+    #fff 0 8%,
+    #bba7ff 9% 33%,
+    var(--violet) 34% 64%,
+    var(--ink) 65%
+  );
+  border-radius: 50%;
+  transform: rotate(7deg);
+}
+.character-artwork-blood-phantom .art-symbol {
+  left: 27%;
+  right: 27%;
+  top: 25%;
+  bottom: 18%;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 50% 50% 32% 32%;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 78%,
+    82% 65%,
+    67% 100%,
+    50% 70%,
+    31% 96%,
+    18% 64%,
+    0 79%
+  );
+}
+.character-artwork-blood-phantom .art-detail {
+  border-radius: 50%;
+  background: transparent;
+  border-color: var(--violet);
+}

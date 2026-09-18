@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import "./animated-hero-title.css";
 
 const titleVariants = [
   "Horizoncraft Legends",

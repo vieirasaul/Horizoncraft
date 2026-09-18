@@ -3,6 +3,8 @@ import { ChapterEditor } from "@/components/admin/chapter-editor";
 import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
 import type { ContentBlock } from "@/lib/types";
+import "./admin-form.css";
+
 type ChapterValue = {
   id?: string;
   title?: string;

@@ -1,4 +1,5 @@
 import { PencilRuler } from "lucide-react";
+import "./empty-state.css";
 export function EmptyState({
   title,
   description,

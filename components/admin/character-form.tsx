@@ -6,6 +6,7 @@ import {
 } from "@/components/admin/power-select-field";
 import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
+import "./admin-form.css";
 
 type CharacterValue = {
   id?: string;

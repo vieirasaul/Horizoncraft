@@ -2,6 +2,7 @@ import { saveGalleryItem } from "@/app/admin/actions";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { PublicationToggle } from "@/components/admin/publication-toggle";
 import { SubmitButton } from "@/components/admin/submit-button";
+import "./admin-form.css";
 
 type GalleryValue = {
   id?: string;

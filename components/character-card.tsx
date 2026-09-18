@@ -3,6 +3,7 @@ import { ArrowUpRight, Shield } from "lucide-react";
 import { CharacterArtwork } from "@/components/character-artwork";
 import { PowerBadge } from "@/components/power-badge";
 import type { Character } from "@/lib/types";
+import "./character-card.css";
 
 export function CharacterCard({ character }: { character: Character }) {
   const roleLabel =

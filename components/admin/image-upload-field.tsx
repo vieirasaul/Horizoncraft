@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Trash2, Upload } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
+import "./admin-form.css";
+import "./image-upload-field.css";
 
 const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 const maxBytes = 3 * 1024 * 1024;

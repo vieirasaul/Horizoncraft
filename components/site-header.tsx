@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogIn, Menu } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import "./site-header.css";
 
 export function SiteHeader({ isAuthenticated }: { isAuthenticated: boolean }) {
   const accountHref = isAuthenticated ? "/admin" : "/admin/login";

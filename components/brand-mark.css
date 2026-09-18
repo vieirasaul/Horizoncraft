@@ -1,0 +1,61 @@
+.brand-mark {
+  position: relative;
+  display: inline-block;
+  width: 49px;
+  height: 48px;
+  flex: none;
+}
+.brand-block {
+  position: absolute;
+  border: 3px solid var(--ink);
+  border-radius: 5px;
+}
+.brand-block-one {
+  left: 1px;
+  bottom: 2px;
+  width: 16px;
+  height: 23px;
+  background: var(--blue);
+  transform: rotate(-5deg);
+}
+.brand-block-two {
+  left: 15px;
+  bottom: 2px;
+  width: 17px;
+  height: 33px;
+  background: var(--yellow);
+  transform: rotate(3deg);
+}
+.brand-block-three {
+  left: 31px;
+  bottom: 2px;
+  width: 17px;
+  height: 42px;
+  background: var(--red);
+  transform: rotate(-2deg);
+}
+.brand-bolt {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  top: 9px;
+  width: 18px;
+  height: 25px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  clip-path: polygon(
+    55% 0,
+    100% 0,
+    68% 38%,
+    98% 38%,
+    29% 100%,
+    46% 56%,
+    12% 56%
+  );
+}
+@media (max-width: 580px) {
+  .brand-mark {
+    transform: scale(0.9);
+    transform-origin: left center;
+  }
+}

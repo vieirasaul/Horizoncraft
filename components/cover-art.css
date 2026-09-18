@@ -1,0 +1,128 @@
+.cover-art {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  min-height: 0;
+  overflow: hidden;
+  border: var(--line);
+  border-radius: 10px;
+  background: var(--blue);
+  box-shadow: var(--shadow);
+  isolation: isolate;
+}
+.cover-art img {
+  object-fit: cover;
+}
+.cover-blue {
+  --cover-color: var(--blue);
+}
+.cover-red {
+  --cover-color: var(--red);
+}
+.cover-yellow {
+  --cover-color: var(--yellow);
+}
+.cover-green {
+  --cover-color: var(--green);
+}
+.cover-violet {
+  --cover-color: var(--violet);
+}
+.cover-art:not(:has(img)) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px;
+  background: linear-gradient(
+    148deg,
+    var(--cover-color) 0 56%,
+    var(--cream) 56%
+  );
+}
+.cover-art small,
+.cover-art strong,
+.cover-art em {
+  position: relative;
+  z-index: 5;
+}
+.cover-art small {
+  width: max-content;
+  margin-bottom: 9px;
+  padding: 4px 7px;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.cover-art strong {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 3.5vw, 3.2rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 2px 2px 0 var(--white);
+}
+.cover-art em {
+  margin-top: 8px;
+  font-size: 0.73rem;
+  font-style: normal;
+  font-weight: 800;
+}
+.cover-halftone {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  background-image: radial-gradient(var(--ink) 1.4px, transparent 1.6px);
+  background-size: 10px 10px;
+}
+.cover-block {
+  position: absolute;
+  border: var(--line);
+  background: var(--white);
+}
+.cover-block-one {
+  width: 37%;
+  height: 54%;
+  left: -6%;
+  top: 12%;
+  transform: rotate(-9deg);
+}
+.cover-block-two {
+  width: 31%;
+  height: 43%;
+  right: -4%;
+  top: 28%;
+  background: var(--red);
+  transform: rotate(8deg);
+}
+.cover-star {
+  position: absolute;
+  z-index: 3;
+  left: 40%;
+  top: 17%;
+  color: var(--yellow);
+  font-size: 4rem;
+  line-height: 1;
+  -webkit-text-stroke: 3px var(--ink);
+  transform: rotate(10deg);
+}
+.cover-lightning {
+  position: absolute;
+  z-index: 4;
+  top: 5%;
+  right: 17%;
+  width: 48px;
+  height: 110px;
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+  clip-path: polygon(
+    55% 0,
+    100% 0,
+    68% 40%,
+    100% 40%,
+    28% 100%,
+    45% 57%,
+    5% 57%
+  );
+  transform: rotate(8deg);
+}
