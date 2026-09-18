@@ -7,6 +7,7 @@ const successMessages = {
   "chapter-deleted": "Capítulo excluído com sucesso.",
   "chapter-reordered": "Ordem dos capítulos atualizada com sucesso.",
   "character-saved": "Personagem salvo com sucesso.",
+  "character-reordered": "Ordem dos personagens atualizada com sucesso.",
   "character-deleted": "Personagem excluído com sucesso.",
   "power-created": "Poder criado com sucesso.",
   "power-deleted": "Poder excluído com sucesso.",

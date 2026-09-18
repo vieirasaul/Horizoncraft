@@ -17,7 +17,6 @@ type CharacterValue = {
   curiosities?: string[];
   image_path?: string | null;
   accent?: string;
-  sort_order?: number;
   status?: string;
   powers?: PowerOption[];
 };
@@ -75,15 +74,6 @@ export function CharacterForm({
             <option value="green">Verde</option>
             <option value="violet">Violeta</option>
           </select>
-        </label>
-        <label>
-          Ordem de exibição
-          <input
-            type="number"
-            name="sort_order"
-            min={0}
-            defaultValue={character.sort_order ?? 0}
-          />
         </label>
       </div>
       <label>

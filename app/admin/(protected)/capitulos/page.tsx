@@ -67,11 +67,7 @@ export default async function AdminChaptersPage({ searchParams }: PageProps) {
                             name="story_id"
                             value={story.id}
                           />
-                          <input
-                            type="hidden"
-                            name="chapter_number"
-                            value={Math.max(1, chapter.chapter_number - 1)}
-                          />
+                          <input type="hidden" name="direction" value="up" />
                           <button
                             type="submit"
                             disabled={index === 0}
@@ -87,11 +83,7 @@ export default async function AdminChaptersPage({ searchParams }: PageProps) {
                             name="story_id"
                             value={story.id}
                           />
-                          <input
-                            type="hidden"
-                            name="chapter_number"
-                            value={chapter.chapter_number + 1}
-                          />
+                          <input type="hidden" name="direction" value="down" />
                           <button
                             type="submit"
                             disabled={index === chapters.length - 1}

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Plus, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 import { DeleteConfirmationDialog } from "@/components/admin/delete-confirmation-dialog";
 
 export type PowerOption = {
@@ -45,6 +45,17 @@ export function PowerSelectField({
     setSelectedIds((current) => current.filter((item) => item !== id));
   }
 
+  function movePower(id: string, direction: -1 | 1) {
+    setSelectedIds((current) => {
+      const index = current.indexOf(id);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= current.length) return current;
+      const next = [...current];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
   return (
     <fieldset className="power-picker">
       <legend>Poderes</legend>
@@ -75,23 +86,41 @@ export function PowerSelectField({
           </div>
           {selectedPowers.length ? (
             <ul className="selected-powers">
-              {selectedPowers.map((power) => (
+              {selectedPowers.map((power, index) => (
                 <li key={power.id}>
                   <input type="hidden" name="power_ids" value={power.id} />
                   <span>
                     <strong>{power.name}</strong>
                     <small>{power.description}</small>
                   </span>
-                  <DeleteConfirmationDialog
-                    title={`Remover “${power.name}” deste personagem?`}
-                    description="O poder será retirado deste personagem quando você salvar as alterações."
-                    triggerLabel="Remover"
-                    confirmLabel="Remover poder"
-                    triggerIcon={<X aria-hidden="true" />}
-                    showTriggerLabel={false}
-                    triggerAriaLabel={`Remover ${power.name} deste personagem`}
-                    onConfirm={() => removePower(power.id)}
-                  />
+                  <div className="selected-power-actions">
+                    <button
+                      type="button"
+                      disabled={index === 0}
+                      onClick={() => movePower(power.id, -1)}
+                      aria-label={`Mover ${power.name} para cima`}
+                    >
+                      <ArrowUp aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={index === selectedPowers.length - 1}
+                      onClick={() => movePower(power.id, 1)}
+                      aria-label={`Mover ${power.name} para baixo`}
+                    >
+                      <ArrowDown aria-hidden="true" />
+                    </button>
+                    <DeleteConfirmationDialog
+                      title={`Remover “${power.name}” deste personagem?`}
+                      description="O poder será retirado deste personagem quando você salvar as alterações."
+                      triggerLabel="Remover"
+                      confirmLabel="Remover poder"
+                      triggerIcon={<X aria-hidden="true" />}
+                      showTriggerLabel={false}
+                      triggerAriaLabel={`Remover ${power.name} deste personagem`}
+                      onConfirm={() => removePower(power.id)}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>

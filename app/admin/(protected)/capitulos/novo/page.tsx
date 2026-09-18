@@ -11,17 +11,12 @@ export default async function NewChapterPage({ searchParams }: PageProps) {
   if (!client) return null;
   const { data: stories } = await client
     .from("stories")
-    .select("id,chapters(chapter_number)")
+    .select("id")
     .order("featured", { ascending: false })
     .order("created_at", { ascending: true })
     .limit(1);
   const story = stories?.[0];
   if (!story) redirect("/admin/capitulos?erro=historia-nao-encontrada");
-  const nextNumber =
-    Math.max(
-      0,
-      ...(story.chapters ?? []).map((chapter) => chapter.chapter_number),
-    ) + 1;
 
   return (
     <main>
@@ -32,7 +27,7 @@ export default async function NewChapterPage({ searchParams }: PageProps) {
       />
       <section className="admin-content admin-form-wrap">
         <Notice error={(await searchParams).erro} />
-        <ChapterForm storyId={story.id} nextNumber={nextNumber} />
+        <ChapterForm storyId={story.id} />
       </section>
     </main>
   );

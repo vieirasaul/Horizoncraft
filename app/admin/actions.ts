@@ -34,7 +34,6 @@ const characterSchema = z.object({
   curiosities: z.string(),
   image_path: nullableText,
   accent: themeColor,
-  sort_order: z.coerce.number().int().min(0),
   status: z.enum(["draft", "published"]),
 });
 const powerSchema = z.object({
@@ -46,7 +45,6 @@ const chapterSchema = z.object({
   story_id: databaseIdSchema,
   title: requiredText,
   slug: slugSchema,
-  chapter_number: z.coerce.number().int().min(1),
   status: z.enum(["draft", "published"]),
   content: z.string().transform((value, context) => {
     try {
@@ -146,9 +144,24 @@ export async function saveChapter(formData: FormData) {
     published_at:
       chapter.status === "published" ? new Date().toISOString() : null,
   };
-  const result = id
-    ? await client.from("chapters").update(payload).eq("id", id)
-    : await client.from("chapters").insert(payload);
+  let result;
+  if (id) {
+    result = await client.from("chapters").update(payload).eq("id", id);
+  } else {
+    const { data: lastChapter, error: orderError } = await client
+      .from("chapters")
+      .select("chapter_number")
+      .eq("story_id", chapter.story_id)
+      .order("chapter_number", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (orderError)
+      redirect(`${formPath}?erro=${encodeURIComponent(orderError.message)}`);
+    result = await client.from("chapters").insert({
+      ...payload,
+      chapter_number: (lastChapter?.chapter_number ?? 0) + 1,
+    });
+  }
   if (result.error)
     redirect(`${formPath}?erro=${encodeURIComponent(result.error.message)}`);
   revalidateStoryPages();
@@ -168,11 +181,20 @@ export async function moveChapter(formData: FormData) {
   const client = await requireAdmin();
   const id = databaseIdSchema.parse(formData.get("id"));
   databaseIdSchema.parse(formData.get("story_id"));
-  const chapterNumber = z.coerce
-    .number()
-    .int()
-    .min(1)
-    .parse(formData.get("chapter_number"));
+  const direction = z.enum(["up", "down"]).parse(formData.get("direction"));
+  const { data: chapter, error: chapterError } = await client
+    .from("chapters")
+    .select("chapter_number")
+    .eq("id", id)
+    .single();
+  if (chapterError)
+    redirect(
+      `/admin/capitulos?erro=${encodeURIComponent(chapterError.message)}`,
+    );
+  const chapterNumber = Math.max(
+    1,
+    chapter.chapter_number + (direction === "up" ? -1 : 1),
+  );
   const { error } = await client.rpc("move_chapter", {
     target_chapter_id: id,
     new_chapter_number: chapterNumber,
@@ -202,14 +224,34 @@ export async function saveCharacter(formData: FormData) {
       .map((item) => item.trim())
       .filter(Boolean),
   };
-  const result = id
-    ? await client
-        .from("characters")
-        .update(payload)
-        .eq("id", id)
-        .select("id")
-        .single()
-    : await client.from("characters").insert(payload).select("id").single();
+  let result;
+  if (id) {
+    result = await client
+      .from("characters")
+      .update(payload)
+      .eq("id", id)
+      .select("id")
+      .single();
+  } else {
+    const { data: lastCharacter, error: orderError } = await client
+      .from("characters")
+      .select("sort_order")
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (orderError)
+      redirect(
+        `/admin/personagens?erro=${encodeURIComponent(orderError.message)}`,
+      );
+    result = await client
+      .from("characters")
+      .insert({
+        ...payload,
+        sort_order: (lastCharacter?.sort_order ?? -1) + 1,
+      })
+      .select("id")
+      .single();
+  }
   if (result.error)
     redirect(
       `/admin/personagens?erro=${encodeURIComponent(result.error.message)}`,
@@ -244,6 +286,42 @@ export async function saveCharacter(formData: FormData) {
   }
   revalidateCharacterPages();
   return redirectWithSuccess("/admin/personagens", "character-saved");
+}
+
+export async function moveCharacter(formData: FormData) {
+  const client = await requireAdmin();
+  const id = databaseIdSchema.parse(formData.get("id"));
+  const direction = z.enum(["up", "down"]).parse(formData.get("direction"));
+  const { data: characters, error: loadError } = await client
+    .from("characters")
+    .select("id,sort_order,updated_at")
+    .order("sort_order", { ascending: true })
+    .order("updated_at", { ascending: false });
+  if (loadError)
+    redirect(
+      `/admin/personagens?erro=${encodeURIComponent(loadError.message)}`,
+    );
+
+  const currentIndex = characters.findIndex((character) => character.id === id);
+  const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+  if (currentIndex < 0 || targetIndex < 0 || targetIndex >= characters.length)
+    return redirectWithSuccess("/admin/personagens", "character-reordered");
+
+  const reordered = [...characters];
+  [reordered[currentIndex], reordered[targetIndex]] = [
+    reordered[targetIndex],
+    reordered[currentIndex],
+  ];
+  for (const [index, character] of reordered.entries()) {
+    const { error } = await client
+      .from("characters")
+      .update({ sort_order: index })
+      .eq("id", character.id);
+    if (error)
+      redirect(`/admin/personagens?erro=${encodeURIComponent(error.message)}`);
+  }
+  revalidateCharacterPages();
+  return redirectWithSuccess("/admin/personagens", "character-reordered");
 }
 
 export async function createPower(formData: FormData) {
