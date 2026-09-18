@@ -7,6 +7,7 @@ import {
   getAuthenticatedAdmin,
   createServerSupabaseClient,
 } from "@/lib/supabase/server";
+import { nextOrder, reorderById } from "@/lib/order";
 import { databaseIdSchema } from "@/lib/validation";
 
 const requiredText = z.string().trim().min(1);
@@ -159,7 +160,7 @@ export async function saveChapter(formData: FormData) {
       redirect(`${formPath}?erro=${encodeURIComponent(orderError.message)}`);
     result = await client.from("chapters").insert({
       ...payload,
-      chapter_number: (lastChapter?.chapter_number ?? 0) + 1,
+      chapter_number: nextOrder(lastChapter?.chapter_number),
     });
   }
   if (result.error)
@@ -247,7 +248,7 @@ export async function saveCharacter(formData: FormData) {
       .from("characters")
       .insert({
         ...payload,
-        sort_order: (lastCharacter?.sort_order ?? -1) + 1,
+        sort_order: nextOrder(lastCharacter?.sort_order),
       })
       .select("id")
       .single();
@@ -302,16 +303,10 @@ export async function moveCharacter(formData: FormData) {
       `/admin/personagens?erro=${encodeURIComponent(loadError.message)}`,
     );
 
-  const currentIndex = characters.findIndex((character) => character.id === id);
-  const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-  if (currentIndex < 0 || targetIndex < 0 || targetIndex >= characters.length)
+  const reordered = reorderById(characters, id, direction);
+  if (!reordered)
     return redirectWithSuccess("/admin/personagens", "character-reordered");
 
-  const reordered = [...characters];
-  [reordered[currentIndex], reordered[targetIndex]] = [
-    reordered[targetIndex],
-    reordered[currentIndex],
-  ];
   for (const [index, character] of reordered.entries()) {
     const { error } = await client
       .from("characters")
