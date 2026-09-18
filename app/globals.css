@@ -3008,6 +3008,10 @@ h3 {
   align-items: end;
   gap: 10px;
 }
+.power-picker-controls .admin-secondary {
+  background: var(--blue);
+  color: var(--white);
+}
 .selected-powers {
   display: grid;
   gap: 8px;
