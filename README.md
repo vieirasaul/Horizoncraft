@@ -49,7 +49,7 @@ The current product presents Horizoncraft as one continuous story composed of mu
 - [Next.js 16](https://nextjs.org/) with App Router
 - [React 19](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS 4](https://tailwindcss.com/) and custom CSS
+- Co-located custom CSS with shared global foundations
 - [Supabase](https://supabase.com/) for PostgreSQL, Auth, and Storage
 - [Zod](https://zod.dev/) for runtime validation
 - [Vitest](https://vitest.dev/) for automated tests
