@@ -149,6 +149,7 @@ test.describe("public site", () => {
   }) => {
     await page.setViewportSize({ width: 440, height: 900 });
     await page.goto("/");
+    await page.evaluate(() => document.fonts.ready);
 
     expect(
       await page.evaluate(() => {
