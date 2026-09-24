@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  productionBrowserSourceMaps: process.env.E2E_MODE === "true",
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [{ protocol: "https", hostname: "**.supabase.co" }],
@@ -33,6 +34,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
     ];
+  },
+  webpack(config) {
+    if (process.env.E2E_MODE === "true") {
+      config.devtool = "source-map";
+    }
+    return config;
   },
 };
 

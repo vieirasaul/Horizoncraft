@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures/test-fixtures";
 
 test.describe("public site", () => {
   test("visitor can navigate from the home page to a chapter", async ({
@@ -38,7 +38,9 @@ test.describe("public site", () => {
     await expect(
       page.getByRole("heading", { name: "Caveira Vermelha" }),
     ).toBeVisible();
-    await expect(page.getByText("Controle do fogo")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Controle do fogo" }),
+    ).toBeVisible();
 
     await page.goto("/poderes");
     await expect(

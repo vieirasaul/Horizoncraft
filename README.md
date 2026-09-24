@@ -147,8 +147,13 @@ npm run lint         # Run ESLint
 npm run typecheck    # Validate TypeScript types
 npm test             # Run the test suite
 npm run test:e2e     # Run public-site end-to-end tests
+npm run coverage     # Run unit and E2E coverage
 npm run format:check # Check formatting
 ```
+
+Coverage reports are written separately to `coverage/unit` and
+`coverage/e2e/report`. Both include an HTML view; the unit report also includes
+LCOV and detailed JSON coverage, while the E2E report includes a JSON summary.
 
 ## Project structure
 

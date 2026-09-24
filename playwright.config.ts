@@ -3,6 +3,8 @@ import { defineConfig, devices } from "@playwright/test";
 const baseURL = process.env.BASE_URL ?? "http://127.0.0.1:3100";
 
 export default defineConfig({
+  globalTeardown: "./tests/e2e/global-teardown.ts",
+
   testDir: "./tests/e2e",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
