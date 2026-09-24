@@ -30,6 +30,7 @@
   text-transform: uppercase;
 }
 .reader-header h1 {
+  color: var(--blue);
   font-size: clamp(2.8rem, 7vw, 5.3rem);
 }
 .chapter-content {
