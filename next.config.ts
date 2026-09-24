@@ -35,12 +35,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  webpack(config) {
-    if (process.env.E2E_MODE === "true") {
-      config.devtool = "source-map";
-    }
-    return config;
-  },
+  ...(process.env.E2E_MODE === "true"
+    ? {
+        webpack(config) {
+          config.devtool = "source-map";
+          return config;
+        },
+      }
+    : {}),
 };
 
 export default nextConfig;

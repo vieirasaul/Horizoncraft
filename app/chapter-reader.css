@@ -1,4 +1,6 @@
 .reader {
+  width: 100%;
+  min-width: 0;
   min-height: 100vh;
   padding: 56px 24px 100px;
   background: #fffdf7;
@@ -7,6 +9,7 @@
 .chapter-content,
 .chapter-navigation {
   width: min(760px, 100%);
+  min-width: 0;
   margin-inline: auto;
 }
 .reader-header {
@@ -138,12 +141,17 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
   padding: 16px;
   background: var(--white);
   border: 2px solid var(--ink);
   border-radius: 10px;
   box-shadow: 3px 3px 0 var(--ink);
   font-weight: 800;
+}
+.chapter-navigation a > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .chapter-navigation a.next {
   justify-content: flex-end;
@@ -162,7 +170,7 @@
     padding: 20px;
   }
   .chapter-navigation {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .chapter-navigation > span {
     display: none;
